@@ -1,27 +1,28 @@
 import ApplicationLogo from '@/Components/ApplicationLogo';
-import { buttonVariants } from '@/Components/ui/button';
+import { cn } from '@/lib/utils';
 import { Link } from '@inertiajs/react';
 import { PropsWithChildren } from 'react';
 
-export default function Guest({ children }: PropsWithChildren) {
+export default function Guest({ children }: PropsWithChildren) {    
     return (
-        <main className="flex min-h-screen flex-col items-center pt-6 sm:justify-center sm:pt-0">
-            <div>
-                <Link href="/">
-                    <ApplicationLogo className="h-20 w-20 fill-current text-foreground" />
-                </Link>
-            </div>
-
-            <div className="mt-6 w-full overflow-hidden p-6 rounded-lg border bg-card text-card-foreground sm:max-w-md">
-                {children}
-            </div>
-            <div className="flex flex-wrap text-sm mt-4">
-                <Link href="/login" className={buttonVariants({ variant: 'link' })}>
-                    Login
-                </Link>
-                <Link href="/register" className={buttonVariants({ variant: 'link' })}>
-                    Create Account
-                </Link>
+        <main className="py-section content-grid justify-items-center">
+            <div className="max-w-[350px] w-full">
+                <div className="flex flex-wrap justify-between items-center mb-10">
+                    <Link href="/">
+                        <ApplicationLogo className="size-8" />
+                    </Link>
+                    <div className="flex text-sm gap-4">
+                        <Link href="/login" className={cn("link font-normal no-underline p-0 text-muted-foreground", route().current("login") && "text-foreground underline")}>
+                            Login
+                        </Link>
+                        <Link href="/register" className={cn("link font-normal no-underline p-0 text-muted-foreground", route().current("register") && "text-foreground underline")}>
+                            Register
+                        </Link>
+                    </div>
+                </div>
+                <div>
+                    {children}
+                </div>
             </div>
         </main>
     );

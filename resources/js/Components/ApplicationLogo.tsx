@@ -5,6 +5,7 @@ export default function ApplicationLogo({className, ...props }: SVGAttributes<SV
     return (
         <svg
             {...props}
+            aria-label="Zutat Logo"
             xmlns="http://www.w3.org/2000/svg"
             width="139"
             height="140"

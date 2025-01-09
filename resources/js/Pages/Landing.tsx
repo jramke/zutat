@@ -39,13 +39,20 @@ export default function Landing({
             )}
 
             <section className="my-section content-grid">
-                <div className="prose">
-                    <h1 className="tracking-tighter">
-                        Back to the essence of cooking with 
-                        <span>
-                            <ApplicationLogo aria-hidden={true} className="inline-block size-10 ms-2 me-2 translate-y-[-3px]" />    
-                        </span>
-                        Zutat.
+                <div className="mb-7 flex justify-between items-center">
+                    <Link href="/">
+                        <ApplicationLogo aria-hidden={true} className="size-8" /> 
+                    </Link>
+                    <Link href="/login" className="link font-normal text-sm transition-colors hover:text-foreground focus-visible:text-foreground">
+                        Login
+                    </Link>
+                </div>
+                <div className="prose [&>p]:text-justify [&>p]:tracking-[-0.1px]">
+                    <h1>
+                        Back to the essence of cooking.
+                        {/* <span>
+                            <ApplicationLogo aria-hidden={true} className="inline-block size-6 ms-1 me-1 translate-y-[-3px]" />    
+                        </span> */}
                     </h1>
                     <p>
                         Recipe collections always where a pain. Either its big
@@ -70,13 +77,13 @@ export default function Landing({
                         Your digital cookbook, without the noise. Because
                         cooking should be about the food.
                     </p>
-                    {user && (
+                    {/* {user && (
                         <p>
                             <Link href="/" className="link">
                                 Back to your digital kitchen shelfd
                             </Link>
                         </p>
-                    )}
+                    )} */}
                 </div>
             </section>
 

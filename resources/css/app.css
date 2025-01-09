@@ -69,7 +69,14 @@
 }
 
 @utility prose {
-    @apply max-w-none prose-headings:text-balance prose-p:text-pretty;
+    @apply 
+        max-w-none 
+        prose-headings:text-balance 
+        prose-headings:text-[1.08rem] 
+        prose-headings:font-semibold 
+        prose-headings:leading-[inherit]
+        prose-headings:tracking-[-0.04em]
+        prose-p:text-pretty;
 }
 
 @utility link {

@@ -22,7 +22,7 @@ export default function Authenticated({ children }: PropsWithChildren) {
             <nav className="content-grid py-8 sticky top-0">
                 <div className="flex justify-between breakout-lg">
                     <Link href="/">
-                        <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800" />
+                        <ApplicationLogo className="size-8" />
                     </Link>
                     <DropdownMenu>
                         <DropdownMenuTrigger

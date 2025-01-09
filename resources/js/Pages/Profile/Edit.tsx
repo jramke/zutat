@@ -12,6 +12,7 @@ export default function Edit({
     return (
         <AuthenticatedLayout>
             <Head title="Profile" />
+            {/* TODO: adjust styles to match landing and login */}
             <div className="content-grid">
                 <h1 className="h1">Profile</h1>
                 <div className="space-y-10">
