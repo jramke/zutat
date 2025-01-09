@@ -1,0 +1,172 @@
+@layer components {
+    .bookshelf {
+        @apply text-foreground;
+        height: 20px;
+        background-image: url("/images/wood-texture.png");
+        width: 100%;
+        position: relative;
+        perspective: 100px;
+        margin-top: 200px;
+        margin-bottom: 65px;
+        &::before {
+            content: "";
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            width: 100%;
+            height: 50px;
+            background-image: linear-gradient(
+                    180deg,
+                    rgba(255, 255, 255, 0) 0%,
+                    #1111111a 100%
+                ),
+                url("/images/wood-texture.png");
+            transform: translateX(-50%) translateY(11px) scale(0.837)
+                rotateX(40deg);
+        }
+        &::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            width: 100%;
+            height: 50px;
+            background: linear-gradient(
+                180deg,
+                #e6e6e6 0%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            clip-path: polygon(0 0, 100% 0, 95% 100%, 5% 100%);
+        }
+
+        .bookshelf-item-wrapper {
+            position: absolute;
+            height: 185px;
+            width: calc(100% - 25%);
+            left: 50%;
+            bottom: 100%;
+            padding: 15px 4px 10px 4px;
+            transform: translateX(-50%);
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            overflow: hidden;
+        }
+    }
+
+    /* inspired by https://vjy.me/book */
+    .book {
+        --spring-easing: linear(
+            0,
+            0.0014,
+            0.0054 1.03%,
+            0.031 2.57%,
+            0.1074 5.13%,
+            0.5393 15.4%,
+            0.6528 18.48%,
+            0.7338,
+            0.802 23.62%,
+            0.8677,
+            0.9176,
+            0.954,
+            0.9795,
+            0.9964 39.02%,
+            1.008 42.61%,
+            1.0143 47.23%,
+            1.0145 53.39%,
+            1.0055 68.28%,
+            1.002 77.01%,
+            0.9998 99.6%
+        );
+        --spring-duration: 0.6242s;
+        position: relative;
+        isolation: isolate;
+        &:hover,
+        &:focus-visible {
+            .book-cover {
+                transform: perspective(1000px) rotateY(-30deg) scaleX(0.85);
+                box-shadow: 12px 0px 10px -10px rgba(0, 0, 0, 0.15);
+                border-right-width: 3px;
+            }
+        }
+        .book-inside {
+            position: absolute;
+            width: 90%;
+            height: 96%;
+            top: 1%;
+            left: 16px;
+            border: 1px solid grey;
+            border-radius: 2px 6px 6px 2px;
+            background: white;
+            box-shadow: inset -2px 0 0 grey, inset -3px 0 0 #dbdbdb,
+                inset -4px 0 0 white, inset -5px 0 0 #dbdbdb,
+                inset -6px 0 0 white, inset -7px 0 0 #dbdbdb,
+                inset -8px 0 0 white, inset -9px 0 0 #dbdbdb;
+            &::after {
+                content: "";
+                position: absolute;
+                width: 70%;
+                height: 13px;
+                bottom: 0;
+                left: 0;
+                background: linear-gradient(
+                    -10deg,
+                    rgba(0, 0, 0, 0.5) 0%,
+                    rgba(0, 0, 0, 0) 100%
+                );
+                filter: blur(2px);
+                transform-origin: left;
+                transform: skewX(30deg) translateX(-27px) translateY(5px);
+            }
+        }
+        .book-cover {
+            position: relative;
+            border-radius: 2px 6px 6px 2px;
+            box-shadow: 20px 1px 10px -10px rgba(0, 0, 0, 0.15);
+            transition: all var(--spring-duration) var(--spring-easing);
+            transform-origin: left;
+            transform-style: preserve-3d;
+            transform: perspective(1000px) rotateY(-10deg) scaleX(0.95);
+            height: 100%;
+            width: 100%;
+            background-color: rgb(255, 132, 31);
+            padding: 10px;
+            padding-left: 22px;
+            border: 1px solid rgba(0, 0, 0, 0.11);
+            border-left: none;
+            border-bottom-width: 2px;
+            &::before {
+                content: "";
+                position: absolute;
+                width: 20px;
+                height: 100%;
+                margin-left: -10px;
+                top: 0;
+                border-left: 2px solid #00000010;
+                background-image: linear-gradient(
+                    90deg,
+                    rgba(255, 255, 255, 0.2) 0%,
+                    rgba(255, 255, 255, 0) 100%
+                );
+                transition: all 0.5s ease;
+                z-index: 3;
+            }
+            &::after {
+                content: "";
+                width: 90%;
+                height: 100%;
+                position: absolute;
+                border-radius: 3px;
+                background-image: linear-gradient(
+                    90deg,
+                    rgba(255, 255, 255, 0) 0%,
+                    rgba(255, 255, 255, 0.2) 100%
+                );
+                top: 0;
+                right: 0;
+                opacity: 0.1;
+                transition: all 0.5s ease;
+                z-index: 1;
+            }
+        }
+    }
+}

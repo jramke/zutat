@@ -1,0 +1,131 @@
+@import "tailwindcss";
+
+/* TODO: are these really needed? */
+@source "./vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php";
+@source "./storage/framework/views/*.php";
+@source "../views";
+@source "../js";
+
+@plugin "@tailwindcss/typography";
+
+@theme {
+    --font-sans: "Inter Variable", "sans-serif";
+
+    --spacing-breakout: 92ch;
+    --spacing-breakout-lg: 104ch;
+    --spacing-reading: 67ch;
+    --spacing-section: calc(var(--spacing) * 20);
+
+    --color-background: hsl(0, 0%, 98%);
+    --color-foreground: hsl(240, 10%, 3.9%);
+
+    --color-popover: var(--color-background);
+    --color-popover-foreground: var(--color-foreground);
+
+    --color-card: var(--color-background);
+    --color-card-foreground: var(--color-foreground);
+
+    --color-primary: hsl(240, 5.9%, 10%);
+    --color-primary-foreground: hsl(0, 0%, 96%);
+
+    --color-secondary: hsl(240, 4.8%, 90%);
+    --color-secondary-foreground: var(--color-primary);
+
+    --color-accent: var(--color-secondary);
+    --color-accent-foreground: var(--color-primary);
+
+    --color-muted: var(--color-secondary);
+    --color-muted-foreground: hsl(240, 3.8%, 46.1%);
+
+    --color-destructive: hsl(0, 84.2%, 60.2%);
+    --color-destructive-foreground: hsl(0, 0%, 96%);
+
+    --color-success: hsl(152, 69%, 31%);
+    --color-success-foreground: hsl(0, 0%, 98%);
+
+    --color-ring: var(--color-primary);
+    --color-border: hsl(240, 5.9%, 90%);
+    --color-input: hsl(240, 5.9%, 90%);
+
+    --radius: 0.5rem;
+    --radius-lg: var(--radius);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-sm: calc(var(--radius) - 4px);
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+    html {
+        scrollbar-gutter: stable;
+    }
+    body {
+        @apply font-sans antialiased bg-background text-foreground;
+    }
+    #app {
+        isolation: isolate;
+    }
+}
+
+@utility prose {
+    @apply max-w-none prose-headings:text-balance prose-p:text-pretty;
+}
+
+@utility link {
+    @apply font-semibold underline underline-offset-2;
+}
+
+@utility h1 {
+    @apply text-4xl font-bold tracking-tighter mb-10;
+}
+
+@utility content-grid {
+    --content-grid-padding: 2rem;
+    --breakout-size: calc(
+        (var(--spacing-breakout) - var(--spacing-reading)) / 2
+    );
+    --breakout-lg-size: calc(
+        (var(--spacing-breakout-lg) - var(--spacing-reading)) / 2
+    );
+    display: grid;
+    grid-template-columns:
+        [full-width-start] minmax(var(--content-grid-padding), 1fr)
+        [breakout-lg-start] minmax(0, var(--breakout-lg-size))
+        [breakout-start] minmax(0, var(--breakout-size))
+        [content-start]
+        min(100% - (var(--content-grid-padding) * 2), var(--spacing-reading))
+        [content-end]
+        minmax(0, var(--breakout-size)) [breakout-end]
+        minmax(0, var(--breakout-lg-size)) [breakout-lg-end]
+        minmax(var(--content-grid-padding), 1fr) [full-width-end];
+}
+
+@layer components {
+    .content-grid {
+        & > * {
+            grid-column: content;
+        }
+        & > img,
+        & > video,
+        & > canvas,
+        & > iframe,
+        & > figure,
+        & > .breakout {
+            grid-column: breakout;
+        }
+        & > .breakout-lg {
+            grid-column: breakout-lg;
+        }
+        & > .full-width {
+            grid-column: full-width;
+        }
+        & > .full-width-content {
+            grid-column: full-width;
+            display: grid;
+            grid-template-columns: inherit;
+        }
+    }
+}
+
+@import "./book";
