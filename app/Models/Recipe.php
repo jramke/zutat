@@ -11,7 +11,7 @@ class Recipe extends Model
 {
     use Orderable, HasSlug;
 
-    protected $fillable = ['title', 'description', 'content', 'order'];
+    protected $fillable = ['user_id', 'title', 'description', 'content', 'order'];
 
     protected $slugScopeColumn = 'cookbook_id';
 

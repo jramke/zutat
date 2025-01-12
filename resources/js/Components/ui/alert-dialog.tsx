@@ -14,7 +14,7 @@ const AlertDialogBackdrop = React.forwardRef<React.ElementRef<typeof AlertDialog
 	({ className, ...props }, ref) => (
 		<AlertDialogPrimitive.Backdrop
 			className={cn(
-				'fixed inset-0 bg-black opacity-70 transition-all duration-150 data-[ending-style]:opacity-0 data-[starting-style]:opacity-0',
+				'fixed inset-0 bg-background/60 backdrop-blur-xl transition-all duration-150 data-[ending-style]:opacity-0 data-[starting-style]:opacity-0',
 				className
 			)}
 			{...props}
@@ -47,7 +47,7 @@ const AlertDialogFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDiv
 AlertDialogFooter.displayName = 'AlertDialogFooter';
 
 const AlertDialogTitle = React.forwardRef<React.ElementRef<typeof AlertDialogPrimitive.Title>, React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Title>>(
-	({ className, ...props }, ref) => <AlertDialogPrimitive.Title ref={ref} className={cn('-mt-1.5 mb-1 text-lg font-medium', className)} {...props} />
+	({ className, ...props }, ref) => <AlertDialogPrimitive.Title ref={ref} className={cn('-mt-1.5 mb-1 heading', className)} {...props} />
 );
 AlertDialogTitle.displayName = AlertDialogPrimitive.Title.displayName;
 

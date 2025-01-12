@@ -57,9 +57,9 @@
     * {
         @apply border-border;
     }
-    html {
+    /* html {
         scrollbar-gutter: stable;
-    }
+    } */
     body {
         @apply font-sans antialiased bg-background text-foreground;
     }
@@ -79,12 +79,12 @@
         prose-p:text-pretty;
 }
 
-@utility link {
-    @apply font-semibold underline underline-offset-2;
+@utility heading {
+    @apply font-semibold text-balance text-[1.08rem] leading-[inherit] tracking-[-0.04em];
 }
 
-@utility h1 {
-    @apply text-4xl font-bold tracking-tighter mb-10;
+@utility link {
+    @apply font-semibold underline underline-offset-2;
 }
 
 @utility content-grid {
@@ -132,7 +132,12 @@
             display: grid;
             grid-template-columns: inherit;
         }
+        & > .full-width-fluid {
+            grid-column: full-width;
+            padding-inline: var(--content-grid-padding);
+        }
     }
 }
 
 @import "./book";
+@import "./tiptap";

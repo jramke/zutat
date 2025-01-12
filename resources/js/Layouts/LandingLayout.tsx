@@ -1,8 +1,9 @@
 import { PropsWithChildren } from "react";
+import Providers from "./Providers";
 
 export default function Landing({ children }: PropsWithChildren) {
     return (
-        <>
+        <Providers>
             <main className="py-section [&>*]:last:mb-0 [&>*]:first:mt-0">
                 {children}
             </main>
@@ -23,6 +24,6 @@ export default function Landing({ children }: PropsWithChildren) {
                     </p>
                 </div>
             </footer>
-        </>
+        </Providers>
     );
 }

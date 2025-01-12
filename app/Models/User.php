@@ -47,10 +47,10 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
-    public function getRouteKeyName()
-    {
-        return 'username';
-    }
+    // public function getRouteKeyName()
+    // {
+    //     return 'username';
+    // }
 
     public function cookbooks()
     {

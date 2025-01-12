@@ -10,7 +10,7 @@ use Inertia\Inertia;
 
 Route::get('/', function (Request $request) {
     if (auth()->check() && $request->user()->hasVerifiedEmail()) {
-        return redirect()->route('cookbooks.index', ['user' => $request->user()]);
+        return redirect()->route('cookbooks.index');
     }
 
     return Inertia::render('Landing', [
@@ -27,12 +27,23 @@ Route::get('/home', function () {
 })->name('landing');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::prefix('u/{user:username}')->group(function () {
-        Route::get('/', [CookbookController::class, 'index'])->name('cookbooks.index');
-        Route::get('/{cookbook}', [CookbookController::class, 'show'])->name('cookbooks.show');
-        Route::post('/create', [CookbookController::class, 'store'])->name('cookbooks.store');
-    });
+    Route::get('/cookbooks', [CookbookController::class, 'index'])->name('cookbooks.index');
+    Route::post('/cookbooks/create', [CookbookController::class, 'store'])->name('cookbooks.store');
+    Route::get('/cookbooks/{cookbook}', [CookbookController::class, 'show'])->name('cookbooks.show');
 
+    Route::get('/cookbooks/{cookbook}/recipes/{recipe?}', [RecipeController::class, 'form'])->name('recipes.form');
+    Route::post('/cookbooks/{cookbook}/recipes', [RecipeController::class, 'store'])->name('recipes.store');
+    Route::patch('/cookbooks/{cookbook}/recipes/{recipe}', [RecipeController::class, 'update'])->name('recipes.update');
+    Route::delete('/cookbooks/{cookbook}/recipes/{recipe}', [RecipeController::class, 'destroy'])->name('recipes.destroy');
+    // Route::prefix('u/{user:username}')->group(function () {
+
+    //     Route::scopeBindings()->group(function () {
+    //     });
+    //     // Route::get('/{cookbook}', [CookbookController::class, 'show'])->name('cookbooks.show');
+    //     // Route::get('/{cookbook}/recipes/create', [RecipeController::class, 'create'])->name('recipes.create');
+    //     // Route::post('/{cookbook}/recipes/create', [RecipeController::class, 'store'])->name('recipes.store');
+    // });
+  
     // Route::get('/cookbooks/{cookbook}', [CookbookController::class, 'show'])->name('cookbooks.show');
     // Route::get('/cookbooks/create', [CookbookController::class, 'create'])->name('cookbooks.create');
     // Route::post('/cookbooks', [CookbookController::class, 'store'])->name('cookbooks.store');

@@ -14,7 +14,7 @@ const DialogBackdrop = React.forwardRef<React.ElementRef<typeof DialogPrimitive.
 	({ className, ...props }, ref) => (
 		<DialogPrimitive.Backdrop
 			className={cn(
-				'fixed inset-0 bg-black opacity-70 transition-all duration-150 data-[ending-style]:opacity-0 data-[starting-style]:opacity-0',
+				'fixed inset-0 bg-background/60 backdrop-blur-xl transition-all duration-150 data-[ending-style]:opacity-0 data-[starting-style]:opacity-0',
 				className
 			)}
 			{...props}
@@ -47,7 +47,7 @@ const DialogFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivEleme
 DialogFooter.displayName = 'DialogFooter';
 
 const DialogTitle = React.forwardRef<React.ElementRef<typeof DialogPrimitive.Title>, React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>>(
-	({ className, ...props }, ref) => <DialogPrimitive.Title ref={ref} className={cn('-mt-1.5 mb-1 text-lg font-bold tracking-tight', className)} {...props} />
+	({ className, ...props }, ref) => <DialogPrimitive.Title ref={ref} className={cn('-mt-1.5 mb-1 heading', className)} {...props} />
 );
 DialogTitle.displayName = DialogPrimitive.Title.displayName;
 

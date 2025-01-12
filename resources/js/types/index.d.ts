@@ -8,6 +8,11 @@ export interface User {
     email_verified_at?: string;
 };
 
+export interface Breadcrumb {
+    title: string;
+    url: string;
+}
+
 export type PageProps<
     T extends Record<string, unknown> = Record<string, unknown>,
 > = T & {
@@ -15,6 +20,7 @@ export type PageProps<
         user: User;
     };
     ziggy: Config & { location: string };
+    breadcrumbs?: Breadcrumb[];
 };
 
 export type TODO = any;
@@ -24,5 +30,13 @@ export interface Cookbook {
     title: string;
     slug: string;
     description: string;
+    order: number;
+}
+
+export interface Recipe {
+    id: number;
+    title: string;
+    description: string;
+    content: any;
     order: number;
 }

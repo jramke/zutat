@@ -53,11 +53,10 @@ export default function Edit({
                                         <Book
                                             key={cookbook.id}
                                             href={route("cookbooks.show", {
-                                                cookbook: cookbook,
-                                                user: auth.user,
+                                                cookbook: cookbook
                                             })}
                                         >
-                                            <h2 className="font-semibold text-balance leading-snug">
+                                            <h2 className="heading leading-tight">
                                                 {cookbook.title}
                                             </h2>
                                             <p className="text-sm mt-2">
@@ -70,8 +69,8 @@ export default function Edit({
                         ))}
                     </>
                 ) : (
-                    <p className="text-center">
-                        Something went wrong finding your cookbooks. <br />
+                    <p>
+                        Oops! Something went wrong finding your cookbooks. <br />
                         Look in your kitchen and come back later.
                     </p>
                 )}
