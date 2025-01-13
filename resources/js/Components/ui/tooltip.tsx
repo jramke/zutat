@@ -34,7 +34,7 @@ const TooltipContent = React.forwardRef<
 >(({ className, sideOffset = 8, children, ...props }, ref) => (
   <TooltipPrimitive.Portal>
     <TooltipPrimitive.Positioner ref={ref} sideOffset={sideOffset} className="outline-none" {...props}>
-        <TooltipPrimitive.Popup className={cn('flex origin-[var(--transform-origin)] flex-col rounded-md bg-popover px-2 py-1 text-sm shadow-lg shadow-black/10 outline -outline-offset-1 outline-border transition-[transform,scale,opacity] data-[ending-style]:scale-90 data-[ending-style]:opacity-0 data-[instant]:duration-0 data-[starting-style]:scale-90 data-[starting-style]:opacity-0', className)}>
+        <TooltipPrimitive.Popup className={cn('flex origin-[var(--transform-origin)] flex-col rounded-md bg-popover px-2 py-1 text-sm shadow-sm shadow-black/5 outline -outline-offset-1 outline-border transition-[transform,scale,opacity] data-[ending-style]:scale-90 data-[ending-style]:opacity-0 data-[instant]:duration-0 data-[starting-style]:scale-90 data-[starting-style]:opacity-0', className)}>
             <TooltipPrimitive.Arrow className="data-[side=bottom]:top-[-8px] data-[side=left]:right-[-13px] data-[side=left]:rotate-90 data-[side=right]:left-[-13px] data-[side=right]:-rotate-90 data-[side=top]:bottom-[-8px] data-[side=top]:rotate-180">
                 <ArrowSvg />
             </TooltipPrimitive.Arrow>

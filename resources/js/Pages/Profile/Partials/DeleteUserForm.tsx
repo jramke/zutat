@@ -36,9 +36,7 @@ export default function DeleteUserForm({
         resetModal();
     };
 
-    const deleteUser: FormEventHandler = (e) => {
-        console.log(e);
-        
+    const deleteUser: FormEventHandler = (e) => {        
         e.preventDefault();
 
         destroy(route('profile.destroy'), {

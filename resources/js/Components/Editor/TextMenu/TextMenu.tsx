@@ -76,7 +76,7 @@ export default function TextMenu({ editor }: { editor: Editor }) {
 
     return (
         <BubbleMenu
-            className="bg-popover shadow-md shadow-black/10 rounded p-1 border flex"
+            className="bg-popover shadow-sm shadow-black/5 rounded p-1 border flex"
             // tippyOptions={{ duration: 100 }}
             // TODO: fix flicker on block option change
             tippyOptions={{

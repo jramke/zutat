@@ -36,7 +36,7 @@ const DropdownMenuContent = React.forwardRef<
 >(({ className, sideOffset = 8, children, ...props }, ref) => (
 	<DropdownMenuPrimitive.Portal>
 		<DropdownMenuPrimitive.Positioner ref={ref} sideOffset={sideOffset} className="outline-none" {...props}>
-			<DropdownMenuPrimitive.Popup className={cn('"origin-[var(--transform-origin)] rounded-md bg-popover py-1 shadow-lg shadow-muted outline -outline-offset-1 outline-border transition-[transform,scale,opacity] data-[ending-style]:scale-90 data-[ending-style]:opacity-0 data-[starting-style]:scale-90 data-[starting-style]:opacity-0', className)}>
+			<DropdownMenuPrimitive.Popup className={cn('"origin-[var(--transform-origin)] rounded-md bg-popover py-1 shadow-sm shadow-black/5 outline -outline-offset-1 outline-border transition-[transform,scale,opacity] data-[ending-style]:scale-90 data-[ending-style]:opacity-0 data-[starting-style]:scale-90 data-[starting-style]:opacity-0', className)}>
 				<DropdownMenuPrimitive.Arrow className="data-[side=bottom]:top-[-8px] data-[side=left]:right-[-13px] data-[side=left]:rotate-90 data-[side=right]:left-[-13px] data-[side=right]:-rotate-90 data-[side=top]:bottom-[-8px] data-[side=top]:rotate-180">
 					<ArrowSvg />
 				</DropdownMenuPrimitive.Arrow>

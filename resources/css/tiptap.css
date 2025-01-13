@@ -1,6 +1,6 @@
 @layer components {
     .tiptap p.is-empty::before {
-        @apply text-muted-foreground;
+        @apply text-muted-foreground/70;
         content: attr(data-placeholder);
         float: left;
         height: 0;

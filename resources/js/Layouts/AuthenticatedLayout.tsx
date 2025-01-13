@@ -84,46 +84,48 @@ export default function Authenticated({ children }: PropsWithChildren) {
                                 <Breadcrumbs />
                             </div>
                             <div id="navbar-action" className="flex items-center gap-2">
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger
-                                        render={
-                                            <Button
-                                                variant={"ghost"}
-                                                className="pe-2 ps-3.5"
-                                            >
-                                                {user.name || user.username}
-                                                <ChevronDown aria-hidden="true" />
-                                            </Button>
-                                        }
-                                    />
-                                    <DropdownMenuContent align="end">
-                                        <DropdownMenuItem
+                                <div className="hidden only:block">
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger
                                             render={
-                                                <Link href={route("profile.edit")}>
-                                                    Profile
-                                                </Link>
-                                            }
-                                        />
-                                        <DropdownMenuItem
-                                            render={
-                                                <Link href="/home">Homepage</Link>
-                                            }
-                                        />
-                                        <DropdownMenuSeparator />
-                                        <DropdownMenuItem
-                                            render={
-                                                <Link
-                                                    href={route("logout")}
-                                                    method="post"
-                                                    as="button"
-                                                    className="w-full"
+                                                <Button
+                                                    variant="secondary"
+                                                    className="pe-1.5"
                                                 >
-                                                    Log Out
-                                                </Link>
+                                                    {user.name || user.username}
+                                                    <ChevronDown aria-hidden="true" />
+                                                </Button>
                                             }
                                         />
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
+                                        <DropdownMenuContent align="end">
+                                            <DropdownMenuItem
+                                                render={
+                                                    <Link href={route("profile.edit")}>
+                                                        Profile
+                                                    </Link>
+                                                }
+                                            />
+                                            <DropdownMenuItem
+                                                render={
+                                                    <Link href="/home">Homepage</Link>
+                                                }
+                                            />
+                                            <DropdownMenuSeparator />
+                                            <DropdownMenuItem
+                                                render={
+                                                    <Link
+                                                        href={route("logout")}
+                                                        method="post"
+                                                        as="button"
+                                                        className="w-full"
+                                                    >
+                                                        Log Out
+                                                    </Link>
+                                                }
+                                            />
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
+                                </div>
                             </div>
                         </div>
                     </div>

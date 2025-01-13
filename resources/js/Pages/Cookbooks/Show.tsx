@@ -3,11 +3,7 @@ import { Cookbook, PageProps, Recipe } from "@/types";
 import { Head, Link, usePage } from "@inertiajs/react";
 
 export default function Edit({ cookbook, recipes, auth }: PageProps<{ cookbook: Cookbook, recipes: Recipe[] }>) {
-    const { title } = cookbook;
-
-    // console.log(recipes);
-    // console.log(usePage());
-    
+    const { title } = cookbook;    
 
     return (
         <AuthenticatedLayout>

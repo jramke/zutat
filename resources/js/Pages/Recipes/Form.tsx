@@ -69,7 +69,6 @@ export default function Create({
             preserveScroll: true,
             onError: (e) => {
                 console.log(e);
-                
             },
             onSuccess: () => {
                 // reset();
@@ -83,7 +82,7 @@ export default function Create({
             <Head title={recipe?.title || "New Recipe"} />
             <div className="content-grid">
 
-                <form onSubmit={submit} className="not-prose">
+                <form onSubmit={submit} className="not-prose" id="recipe-editor-form">
                     <FormField>
                         <FormFieldLabel className="sr-only">Title</FormFieldLabel>
                         <input
@@ -102,10 +101,10 @@ export default function Create({
                     <Portal.Root container={navbarActionEl}>
                         <Tooltip>
                             <TooltipTrigger render={
-                                <LoadingButton loading={processing}>{isEditing ? "Save" : "Create"}</LoadingButton>
+                                <LoadingButton form="recipe-editor-form" loading={processing}>{isEditing ? "Save" : "Create"}</LoadingButton>
                             } />
                             <TooltipContent>
-                                <span className="text-muted-foreground">⌘S</span>
+                                <span className="text-muted-foreground text-xs">⌘S</span>
                             </TooltipContent>
                         </Tooltip>
                     </Portal.Root>

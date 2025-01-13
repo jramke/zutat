@@ -230,7 +230,7 @@ const CommandList = ({
     }, [selectedIndex]);
 
     return items.length > 0 ? (
-        <div className="z-1 min-w-50 rounded-lg border bg-popover shadow-lg shadow-black/10 transition-all">
+        <div className="z-1 min-w-50 rounded-lg border bg-popover shadow-sm shadow-black/5 transition-all">
             <div
                 id="slash-command"
                 ref={commandListContainer}

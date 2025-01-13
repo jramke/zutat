@@ -22,10 +22,10 @@ export default function useEditor({ content }: { content: Content | undefined })
         extensions: [
             Placeholder.configure({
                 placeholder: ({ node, editor }) => {
-                    console.log(node);
                     if (editor.isEmpty) {
                         return "Start writing your recipe, type '/' to use a command";
                     }
+                    // TODO: find solution to make browser respect scrollpadding for new lines also if we didnt start typing
                     return "Type '/' to browse options";
                 },
             }),

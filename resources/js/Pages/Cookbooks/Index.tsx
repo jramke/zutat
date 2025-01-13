@@ -9,12 +9,8 @@ export default function Edit({
     cookbooks,
     auth,
 }: PageProps<{ cookbooks: Cookbook[] }>) {
-    console.log(cookbooks);
-
     // const [cookbooksState, setCookbooksState] = useState<Cookbook[]>(cookbooks);
     const [createCookbookDialogOpen, setCreateCookbookDialogOpen] = useState(false);
-
-    console.log('rerendered');
 
     const cookbooksWithPlaceholder = [null, ...cookbooks];
     const chunkSize = 4;
@@ -32,7 +28,6 @@ export default function Edit({
         },
         []
     );
-    console.log(chunkedCookbooks);
 
     return (
         <AuthenticatedLayout>
