@@ -20,6 +20,7 @@ export default function Create({
     const isEditing = !!recipe;
     const titleInputRef = useRef<HTMLInputElement|null>(null);
     const navbarActionEl = useNavbarAction();
+    const formRef = useRef<HTMLFormElement|null>(null);
     
     const { data, setData, post, patch,  processing, errors, reset, clearErrors, transform } = useForm({
         title: recipe?.title ?? "",
@@ -42,7 +43,7 @@ export default function Create({
         window.addEventListener("keydown", (e) => {
             if ((e.metaKey || e.ctrlKey) && e.key === "s") {
                 e.preventDefault();
-                submit(e as any);
+                submit();
             }
         });
 
@@ -51,8 +52,11 @@ export default function Create({
         };
     }, []);
 
+    function submit() {
+        formRef.current?.requestSubmit();
+    }
 
-    const submit: FormEventHandler = (e) => {
+    const onSubmit: FormEventHandler = (e) => {
         e.preventDefault();
 
         const method = isEditing ? patch : post;
@@ -67,6 +71,9 @@ export default function Create({
 
         method(route(routeName, { cookbook, recipe }), {
             preserveScroll: true,
+            onBefore: (e) => {
+                console.log('before submit', e);
+            },
             onError: (e) => {
                 console.log(e);
             },
@@ -81,8 +88,7 @@ export default function Create({
         <AuthenticatedLayout>
             <Head title={recipe?.title || "New Recipe"} />
             <div className="content-grid">
-
-                <form onSubmit={submit} className="not-prose" id="recipe-editor-form">
+                <form ref={formRef} onSubmit={onSubmit} className="not-prose" id="recipe-editor-form">
                     <FormField>
                         <FormFieldLabel className="sr-only">Title</FormFieldLabel>
                         <input
