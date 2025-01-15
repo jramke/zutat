@@ -2,6 +2,7 @@ import Placeholder from "@tiptap/extension-placeholder";
 import { Content, useEditor as useTiptapEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { getSlashCommandSuggestions, SlashCommand } from "./Extensions/SlashCommand";
+import AiWriter from "./Extensions/AiWriter";
 
 export default function useEditor({ content }: { content: Content | undefined }) {
     return useTiptapEditor({
@@ -37,6 +38,7 @@ export default function useEditor({ content }: { content: Content | undefined })
             SlashCommand.configure({
                 suggestion: getSlashCommandSuggestions([]),
             }),
+            AiWriter,
         ],
         content: content,
         autofocus: false, // TODO: this is not working??

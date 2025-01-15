@@ -30,6 +30,8 @@ export default function Create({
 
     const editor = useEditor({ content: data.content });
 
+    console.log(data.content);
+
     if (!editor) {
         return null;
     }
@@ -75,6 +77,7 @@ export default function Create({
                 console.log('before submit', e);
             },
             onError: (e) => {
+                // TODO:
                 console.log(e);
             },
             onSuccess: () => {

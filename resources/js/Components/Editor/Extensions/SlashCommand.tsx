@@ -15,6 +15,7 @@ import Suggestion, { SuggestionOptions } from "@tiptap/suggestion";
 import {
     Heading2,
     Heading3,
+    Link2,
     List,
     ListOrdered,
     Minus,
@@ -75,6 +76,19 @@ export const SlashCommand = Extension.create({
 const iconClassNames = "size-4 text-muted-foreground";
 
 const DEFAULT_SLASH_COMMANDS: SlashCommandItem[] = [
+    {
+        title: "Generate from URL",
+        searchTerms: ["ai", "generate", "url", "import"],
+        icon: <Link2 className={iconClassNames} />,
+        command: ({ editor, range }) => {
+            editor
+                .chain()
+                .focus()
+                .deleteRange(range)
+                .insertContent('<ai-writer />')
+                .run();
+        },
+    },
     {
         title: "Paragraph",
         searchTerms: ["p", "paragraph"],

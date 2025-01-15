@@ -8,8 +8,10 @@ use App\Models\Recipe;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Models\User;
+use App\Observers\RecipeScraperObserver;
 use App\Services\Breadcrumbs;
 // use Diglactic\Breadcrumbs\Breadcrumbs;
+use Spatie\Crawler\Crawler;
 
 class RecipeController extends Controller
 {
@@ -57,6 +59,24 @@ class RecipeController extends Controller
         $recipe->delete();
 
         return redirect()->route('cookbooks.show', $cookbook)->with('success', 'Recipe deleted successfully.');
+    }
+
+    public function generateFromUrl(Request $request)
+    {
+        $data = $request->validate([
+            'url' => 'required|url',
+        ]);
+
+        Crawler::create()
+            ->setCrawlObserver(new RecipeScraperObserver())
+            ->setMaximumDepth(0)
+            ->setTotalCrawlLimit(1)
+            ->startCrawling("https://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_National_Pok%C3%A9dex_number");
+
+        // dd($data);
+        // $recipe = Recipe::generateFromUrl($data['url']);
+
+        // return response()->json($recipe);
     }
 
     // // For reordering
