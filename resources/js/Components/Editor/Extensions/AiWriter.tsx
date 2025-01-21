@@ -8,7 +8,7 @@ import {
 import { FormEventHandler, KeyboardEventHandler, useEffect, useRef } from "react";
 
 function View({ editor, node, getPos, deleteNode }: NodeViewProps) {
-    const { data, setData, post, } = useForm({
+    const { data, setData, post, processing } = useForm({
         url: '',
     });
 
@@ -29,12 +29,12 @@ function View({ editor, node, getPos, deleteNode }: NodeViewProps) {
         e.preventDefault();
         post(route("recipes.from-url"), {
             preserveScroll: true,
-            onError: (e) => {
+            onError: (response) => {
                 // TODO:
-                console.log("error", e);
+                console.log("error", response);
             },
-            onSuccess: (e) => {
-                console.log("success", e);
+            onSuccess: (response) => {
+                console.log("success", response);
             },
         })
     }
@@ -61,12 +61,13 @@ function View({ editor, node, getPos, deleteNode }: NodeViewProps) {
                     placeholder={node.attrs.placeholder}
                     onKeyDown={onKeyDown}
                     onPaste={() => {
-                        // setTimeout(() => {
+                        setTimeout(() => {
                             submit();
-                        // }, 0);
+                        }, 0);
                     }}
                     onChange={(e) => setData("url", e.target.value)}
                 />
+                {processing && (<span>Processing</span>)}
             </form>
         </NodeViewWrapper>
     );
