@@ -45,23 +45,20 @@ class RecipeController extends Controller
     {
         return [
             'title' => Purify::clean($data['title']),
-            'description' => Purify::clean($data['description']),
-            'instructions' => Purify::clean($data['instructions']),
-            'ingredients' => array_map(fn($ingredient) => Purify::clean($ingredient), $data['ingredients']),
-            'servings' => $data['servings'],
-            'prep_time' => $data['prep_time'],
-            'cook_time' => $data['cook_time'],
-            'difficulty' => $data['difficulty'],
-            'cuisine_type' => Purify::clean($data['cuisine_type']),
-            'estimated_cost' => $data['estimated_cost'],
+            'description' => Purify::clean($data['description'] ?? null),
+            'instructions' => Purify::clean($data['instructions'] ?? null),
+            'ingredients' => array_map(fn($ingredient) => Purify::clean($ingredient), $data['ingredients'] ?? []),
+            'servings' => $data['servings'] ?? 1,
+            'prep_time' => $data['prep_time'] ?? null,
+            'cook_time' => $data['cook_time'] ?? null,
+            'difficulty' => $data['difficulty'] ?? null,
+            'cuisine_type' => Purify::clean($data['cuisine_type'] ?? null),
         ];
     }
 
     public function form(Cookbook $cookbook, Recipe $recipe = null)
     {
         Breadcrumbs::generate('recipes.form', $cookbook, $recipe);
-
-        // dd($recipe->difficulty);
 
         return Inertia::render('Recipes/Form', [
             'cookbook' => $cookbook,
@@ -108,10 +105,6 @@ class RecipeController extends Controller
         );
 
         if (!$limiter) {
-            // return response()->json([
-            //     'error' => 'Too many requests. Please try again in a minute.'
-            // ], 429);
-            // return redirect()->route('recipes.form', ['cookbook' => $cookbook])->with('error', 'Too many requests. Please try again in a minute.');
             return back()->withErrors(['url' => 'Too many requests. Please try again in a minute.']);
         }
 
@@ -122,8 +115,6 @@ class RecipeController extends Controller
     
             $response = Http::get($data['url']);
             if ($response->failed()) {
-                // return response()->json(['error' => 'Failed to fetch URL'], 400);
-                // return redirect()->route('recipes.form', ['cookbook' => $cookbook])->with('error', 'Failed to fetch URL');
                 return back()->withErrors(['url' => 'Failed to fetch URL']);
             }
 
@@ -144,16 +135,12 @@ class RecipeController extends Controller
             $content = $main->textContent;
             $content = preg_replace('/\s+/', ' ', $content);
             $content = mb_convert_encoding($content, 'UTF-8', 'auto');
-            // dd($content);
 
             if (empty($content)) {
-                // return response()->json(['error' => 'No content could be extracted from URL'], 422);
-                // return redirect()->route('recipes.form', ['cookbook' => $cookbook])->with('error', 'No content could be extracted from URL');
                 return back()->withErrors(['url' => 'No content could be extracted from URL']);
             }
     
             $recipeData = $this->extractor->extractRecipeData($content);
-            // dd($recipeData);
             
             $recipeValidator = Validator::make($recipeData, $this->validationRules());
             if ($recipeValidator->fails()) {
@@ -169,20 +156,12 @@ class RecipeController extends Controller
 
             return redirect()->route('recipes.form', ['cookbook' => $cookbook, 'recipe' => $recipe])->with('success', 'Recipe created successfully.');
             
-            // return response()->json([
-            //     'url' => $data['url'],
-            //     'data' => $recipeData,
-            // ]);
         } catch (\Exception $e) {
             Log::error('Recipe extraction failed', [
                 'url' => $request->input('url'),
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
-            // return response()->json([
-            //     'error' => 'Failed to process recipe: ' . $e->getMessage()
-            // ], 500);
-            // return redirect()->route('recipes.form', ['cookbook' => $cookbook])->with('error', 'Failed to process recipe: ' . $e->getMessage());
             return back()->withErrors(['url' => 'Failed to process recipe: ' . $e->getMessage()]);
         }
 

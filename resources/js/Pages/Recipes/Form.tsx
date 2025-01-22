@@ -207,7 +207,7 @@ export default function Create({
                     </Portal.Root>
                 </form>
 
-                {data.ingredients && (
+                {data.ingredients && data.ingredients.length > 0 && (
                     <>
                         <div className="my-6 h-px bg-border"></div>
                         {/* <p className="heading mt-6">Ingredients</p> */}

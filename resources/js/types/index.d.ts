@@ -49,7 +49,6 @@ export interface Recipe {
     prep_time: string;
     cook_time: string;
     servings: number;
-    estimated_cost: string;
     order: number;
 }
 

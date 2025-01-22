@@ -22,7 +22,6 @@ class Recipe extends Model
         'servings',
         'difficulty',
         'cuisine_type',
-        'estimated_cost',
         'order'
     ];
 
