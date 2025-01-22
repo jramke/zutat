@@ -43,8 +43,8 @@ export default function Create({
         ingredients: recipe?.ingredients ?? null,
         cuisine_type: recipe?.cuisine_type ?? "",
         difficulty: recipe?.difficulty ?? null,
-        prep_time: recipe?.prep_time ?? null,
-        cook_time: recipe?.cook_time ?? null,
+        prep_time: recipe?.prep_time ?? "",
+        cook_time: recipe?.cook_time ?? "",
         servings: recipe?.servings ?? null,
     });    
 
@@ -104,7 +104,7 @@ export default function Create({
         });
     };
 
-    const metadataFields: Array<{name: keyof typeof data, label: string, control: ReactNode}> = [
+    const metadataFields: Array<{name: string, label: string, control: ReactNode}> = [
         { 
             name: "description", 
             label: "Description",
@@ -157,6 +157,37 @@ export default function Create({
                     onChange={(e) => setData("cuisine_type", e.target.value)}
                 />
         },
+        {
+            name: "time",
+            label: "Time",
+            control: 
+                <div className="flex gap-3">
+                    <label className="flex items-baseline gap-0.5">
+                        <input
+                            id="prep_time"
+                            name="prep_time"
+                            placeholder="0"
+                            className="rounded-none border-transparent outline-none text-prose-body"
+                            style={{ width: `max(calc(${data.prep_time.length}ch), 1ch)` }}
+                            value={data.prep_time}
+                            onChange={(e) => setData("prep_time", e.target.value)}
+                        />
+                        <span className="text-xs text-muted-foreground">Prep Time</span>
+                    </label>
+                    <label className="flex items-baseline gap-1">
+                        <input
+                            id="cook_time"
+                            name="cook_time"
+                            placeholder="0"
+                            className="rounded-none border-transparent outline-none text-prose-body"
+                            style={{ width: `max(calc(${data.cook_time.length}ch), 1ch)` }}
+                            value={data.cook_time}
+                            onChange={(e) => setData("cook_time", e.target.value)}
+                        />
+                        <span className="text-xs text-muted-foreground">Cook Time</span>
+                    </label>
+                </div>
+        }
     ];
 
     return (
