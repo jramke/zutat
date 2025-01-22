@@ -19,7 +19,6 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $fillable = [
         'name',
-        'username',
         'email',
         'password',
     ];
@@ -46,11 +45,6 @@ class User extends Authenticatable implements MustVerifyEmail
             'password' => 'hashed',
         ];
     }
-
-    // public function getRouteKeyName()
-    // {
-    //     return 'username';
-    // }
 
     public function cookbooks()
     {

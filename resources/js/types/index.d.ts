@@ -3,7 +3,6 @@ import { Config } from 'ziggy-js';
 export interface User {
     id: number;
     name: string;
-    username: string;
     email: string;
     email_verified_at?: string;
 };
@@ -11,6 +10,11 @@ export interface User {
 export interface Breadcrumb {
     title: string;
     url: string;
+}
+
+export interface OptionEnum {
+    name: string;
+    value: string;
 }
 
 export type PageProps<
@@ -21,6 +25,7 @@ export type PageProps<
     };
     ziggy: Config & { location: string };
     breadcrumbs?: Breadcrumb[];
+    enums: Record<string, OptionEnum[]>;
 };
 
 export type TODO = any;
@@ -37,6 +42,24 @@ export interface Recipe {
     id: number;
     title: string;
     description: string;
-    content: any;
+    instructions: any;
+    ingredients: IngredientGroup[];
+    cuisine_type: string;
+    difficulty: string;
+    prep_time: string;
+    cook_time: string;
+    servings: number;
+    estimated_cost: string;
     order: number;
+}
+
+export interface IngredientGroup {
+    name: string;
+    items: Ingredient[];
+}
+
+export interface Ingredient {
+    item: string;
+    quantity: string;
+    unit: string;
 }

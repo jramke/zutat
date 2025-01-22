@@ -35,7 +35,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/cookbooks/{cookbook}/recipes', [RecipeController::class, 'store'])->name('recipes.store');
     Route::patch('/cookbooks/{cookbook}/recipes/{recipe}', [RecipeController::class, 'update'])->name('recipes.update');
     Route::delete('/cookbooks/{cookbook}/recipes/{recipe}', [RecipeController::class, 'destroy'])->name('recipes.destroy');
-    Route::post('/recipe-from-url', [RecipeController::class, 'generateFromUrl'])->name('recipes.from-url');
+    Route::post('/cookbooks/{cookbook}/recipe-from-url', [RecipeController::class, 'generateFromUrl'])->name('recipes.from-url');
 
     // Route::prefix('u/{user:username}')->group(function () {
 

@@ -17,7 +17,6 @@ export default function UpdateProfileInformation({
 
     const { data, setData, patch, errors, processing, recentlySuccessful } =
         useForm({
-            username: user.username,
             name: user.name ?? '',
             email: user.email,
         });
@@ -42,7 +41,7 @@ export default function UpdateProfileInformation({
 
             <form onSubmit={submit} className="mt-6 space-y-6">
                 <FormField>
-                    <FormFieldLabel>Dispay Name</FormFieldLabel>
+                    <FormFieldLabel>Name</FormFieldLabel>
                     <Input
                         id="name"
                         value={data.name}
@@ -52,18 +51,6 @@ export default function UpdateProfileInformation({
                     />
                     {/* {errors.name && (<FormFieldError>{errors.name}</FormFieldError>)} */}
                     <FormFieldError error={errors.name} />
-                </FormField>
-                <FormField>
-                    <FormFieldLabel>Username</FormFieldLabel>
-                    <Input
-                        id="username"
-                        value={data.username}
-                        onChange={(e) => setData('username', e.target.value)}
-                        required
-                        autoComplete="username"
-                    />
-                    {/* {errors.username && (<FormFieldError>{errors.username}</FormFieldError>)} */}
-                    <FormFieldError error={errors.username} />
                 </FormField>
                 <FormField>
                     <FormFieldLabel>Email</FormFieldLabel>

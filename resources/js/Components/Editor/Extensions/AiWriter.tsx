@@ -1,4 +1,5 @@
-import { useForm } from "@inertiajs/react";
+import { FormField, FormFieldError, FormFieldLabel } from "@/Components/ui/form-field";
+import { useForm, usePage, router } from "@inertiajs/react";
 import { mergeAttributes, Node } from "@tiptap/core";
 import {
     ReactNodeViewRenderer,
@@ -8,9 +9,13 @@ import {
 import { FormEventHandler, KeyboardEventHandler, useEffect, useRef } from "react";
 
 function View({ editor, node, getPos, deleteNode }: NodeViewProps) {
-    const { data, setData, post, processing } = useForm({
+    const { data, setData, post, processing, errors } = useForm({
         url: '',
     });
+
+    // console.log('usepage', usePage());
+
+    const cookbook = editor.storage.context.cookbook;
 
     const formRef = useRef<HTMLFormElement>(null);
     const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -27,14 +32,16 @@ function View({ editor, node, getPos, deleteNode }: NodeViewProps) {
 
     const onSubmit: FormEventHandler = (e) => {
         e.preventDefault();
-        post(route("recipes.from-url"), {
+        post(route("recipes.from-url", { cookbook }), {
             preserveScroll: true,
+            preserveState: (page) => Object.keys(page.props.errors).length !== 0,
             onError: (response) => {
                 // TODO:
                 console.log("error", response);
             },
             onSuccess: (response) => {
                 console.log("success", response);
+                // router.reload()
             },
         })
     }
@@ -45,7 +52,11 @@ function View({ editor, node, getPos, deleteNode }: NodeViewProps) {
             submit();
         }
         if ((e.key === "Escape" || e.key === "Backspace") && inputRef.current?.value === "") {
+            editor.commands.enter();
             deleteNode();
+            setTimeout(() => {
+                editor.commands.focus('end');
+            }, 0);
         }
     };
 
@@ -53,20 +64,25 @@ function View({ editor, node, getPos, deleteNode }: NodeViewProps) {
     return (
         <NodeViewWrapper>
             <form className="my-5" onSubmit={onSubmit} ref={formRef}>
-                <textarea
-                    ref={inputRef}
-                    name="url"
-                    value={data.url}
-                    className="rounded-none border-transparent outline-none w-full"
-                    placeholder={node.attrs.placeholder}
-                    onKeyDown={onKeyDown}
-                    onPaste={() => {
-                        setTimeout(() => {
-                            submit();
-                        }, 0);
-                    }}
-                    onChange={(e) => setData("url", e.target.value)}
-                />
+                <FormField>
+                    <FormFieldLabel className="sr-only">Enter URL</FormFieldLabel>
+                    <textarea
+                        ref={inputRef}
+                        name="url"
+                        value={data.url}
+                        className="rounded-none border-transparent outline-none w-full textarea-autosize"
+                        style={{ "--min-height": "1lh" } as React.CSSProperties}
+                        placeholder={node.attrs.placeholder}
+                        onKeyDown={onKeyDown}
+                        onPaste={() => {
+                            setTimeout(() => {
+                                submit();
+                            }, 0);
+                        }}
+                        onChange={(e) => setData("url", e.target.value)}
+                    />
+                    <FormFieldError error={errors.url} />
+                </FormField>
                 {processing && (<span>Processing</span>)}
             </form>
         </NodeViewWrapper>

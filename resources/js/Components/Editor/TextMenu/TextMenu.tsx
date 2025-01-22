@@ -62,8 +62,8 @@ export default function TextMenu({ editor }: { editor: Editor }) {
         to?: number
     }
     const shouldShow = useCallback(
-        ({ view, from }: ShouldShowProps) => {
-            if (!view || editor.view.dragging) {
+        ({ view, from }: ShouldShowProps) => {            
+            if (!view || editor.view.dragging || !editor.isFocused) {
                 return false
             }            
 

@@ -19,6 +19,9 @@
     --color-background: hsl(0, 0%, 98%);
     --color-foreground: hsl(240, 10%, 3.9%);
 
+    --color-brand: hsl(25, 100%, 56%);
+    --color-prose-body: oklch(0.371 0 0);
+
     --color-popover: hsl(0, 0%, 100%);
     --color-popover-foreground: var(--color-foreground);
 
@@ -28,7 +31,8 @@
     --color-primary: hsl(240, 5.9%, 10%);
     --color-primary-foreground: hsl(0, 0%, 96%);
 
-    --color-secondary: hsl(240, 4.8%, 90%);
+    /* --color-secondary: hsl(25, 56%, 76%); */
+    --color-secondary: hsl(240, 4.8%, 96%);
     --color-secondary-foreground: var(--color-primary);
 
     --color-accent: var(--color-secondary);
@@ -56,6 +60,7 @@
 @layer base {
     * {
         @apply border-border;
+        /* caret-color: var(--color-brand); */
     }
     html {
         /* so the last line of editor is not directly at the bottom of the screen if text is longer than one page */
@@ -68,8 +73,9 @@
         isolation: isolate;
     }
     ::selection {
-		background-color: rgb(145, 205, 245);
-		/* color: in; */
+		/* background-color: rgb(145, 205, 245); */
+        background-color: color-mix(in hsl, var(--color-brand), transparent 80%);
+        color: color-mix(in hsl, var(--color-brand), black 10%);
 	}
 }
 
@@ -83,10 +89,15 @@
         prose-headings:leading-[inherit]
         prose-headings:tracking-[-0.04em]
         prose-p:text-pretty;
+    --tw-prose-body: var(--color-prose-body);
+}
+
+@utility text-prose-body {
+    color: var(--color-prose-body);
 }
 
 @utility heading {
-    @apply font-semibold text-balance text-[1.08rem] leading-[inherit] tracking-[-0.04em];
+    @apply font-semibold text-balance text-[1.08rem] leading-[inherit] tracking-[-0.04em] text-foreground;
 }
 
 @utility link {
@@ -112,6 +123,21 @@
         minmax(0, var(--breakout-size)) [breakout-end]
         minmax(0, var(--breakout-lg-size)) [breakout-lg-end]
         minmax(var(--content-grid-padding), 1fr) [full-width-end];
+}
+
+@utility textarea-autosize {
+    --padding-y: 0px;
+    --border-width: 0px;
+    --min-height: 3lh;
+    --max-height: 8lh;
+    min-height: calc(var(--min-height) + (2 * (var(--padding-y) + var(--border-width))));
+    max-height: calc(var(--max-height)  + (2 * (var(--padding-y) + var(--border-width))));
+    field-sizing: content;
+    resize: none;
+}
+
+@utility text-placeholder {
+    color: color-mix(in oklab, currentColor 50%, transparent);
 }
 
 @layer components {
@@ -228,6 +254,20 @@
         & > .full-width-fluid {
             grid-column: full-width;
             padding-inline: var(--content-grid-padding);
+        }
+    }
+
+    .top-nav-bg-blur {
+        position: relative;
+        isolation: isolate;
+        @apply bg-gradient-to-b from-background/70 via-background/70 to-transparent;
+        &::after {
+            content: "";
+            position: absolute;
+            inset: -40px 0px;
+            backdrop-filter: blur(8px);
+            z-index: -1;
+            mask-image: linear-gradient(black, black 60%, transparent);
         }
     }
 }

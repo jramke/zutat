@@ -15,8 +15,8 @@ export default function Login({
     canResetPassword: boolean;
 }) {
     const { data, setData, post, processing, errors, reset } = useForm({
-        username: '',
-        // email: '',
+        // name: '',
+        email: '',
         password: '',
         remember: true,
     });
@@ -41,17 +41,16 @@ export default function Login({
 
             <form onSubmit={submit} className="space-y-4">
                 <FormField>
-                    <FormFieldLabel>Username</FormFieldLabel>
+                    <FormFieldLabel>Email</FormFieldLabel>
                     <Input 
-                        id="username"
-                        name="username"
-                        value={data.username}
+                        id="email"
+                        name="email"
+                        value={data.email}
                         autoFocus
-                        autoComplete='username'
-                        onChange={(e) => setData('username', e.target.value)}
+                        autoComplete='email'
+                        onChange={(e) => setData('email', e.target.value)}
                     />
-                    {/* {errors.username && <FormFieldError>{errors.username}</FormFieldError>} */}
-                    <FormFieldError error={errors.username} />
+                    <FormFieldError error={errors.email} />
                 </FormField>
 
                 <FormField>
@@ -64,7 +63,6 @@ export default function Login({
                         autoComplete="current-password"
                         onChange={(e) => setData('password', e.target.value)}
                     />
-                    {/* {errors.password && <FormFieldError>{errors.password}</FormFieldError>} */}
                     <FormFieldError error={errors.password} />
                 </FormField>
 

@@ -2,21 +2,36 @@
 
 namespace App\Models;
 
+use App\Enums\RecipeDifficulty;
 use App\Traits\HasSlug;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 use App\Traits\Orderable;
 
 class Recipe extends Model
 {
     use Orderable, HasSlug;
 
-    protected $fillable = ['user_id', 'title', 'description', 'content', 'order'];
+    protected $fillable = [
+        'user_id', 
+        'title', 
+        'description', 
+        'instructions', 
+        'ingredients', 
+        'prep_time', 
+        'cook_time', 
+        'servings',
+        'difficulty',
+        'cuisine_type',
+        'estimated_cost',
+        'order'
+    ];
 
     protected $slugScopeColumn = 'cookbook_id';
 
     protected $casts = [
-        'content' => 'array',
+        'instructions' => 'array',
+        'ingredients' => 'array',
+        // 'difficulty' => RecipeDifficulty::class,
     ];
 
     public function user()

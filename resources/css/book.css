@@ -128,7 +128,7 @@
             transform: perspective(1000px) rotateY(-10deg) scaleX(0.95);
             height: 100%;
             width: 100%;
-            background-color: rgb(255, 132, 31);
+            background-color: var(--color-brand);
             padding: 10px;
             padding-left: 22px;
             border: 1px solid rgba(0, 0, 0, 0.11);

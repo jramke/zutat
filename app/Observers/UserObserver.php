@@ -8,7 +8,7 @@ class UserObserver
 {
     public function created(User $user)
     {
-        $realName = $user->name ?? $user->username;
+        $realName = $user->name;
         $user->cookbooks()->create([
             'title' => $realName . '\'s Cookbook',
             'description' => 'Your default recipe collection'

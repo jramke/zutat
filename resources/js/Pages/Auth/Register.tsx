@@ -7,8 +7,7 @@ import { FormEventHandler } from 'react';
 
 export default function Register() {
 	const { data, setData, post, processing, errors, reset } = useForm({
-		// name: '',
-		username: '',
+		name: '',
 		email: '',
 		password: '',
 		password_confirmation: ''
@@ -27,17 +26,10 @@ export default function Register() {
 			<Head title="Register" />
 
 			<form onSubmit={submit} className="space-y-4">
-				{/* <FormField>
-					<FormFieldLabel>Display Name</FormFieldLabel>
-					<Input id="name" name="name" value={data.name} autoComplete="name" autoFocus onChange={(e) => setData('name', e.target.value)} required />
-					{errors.name && <FormFieldError>{errors.name}</FormFieldError>}
-				</FormField> */}
-
 				<FormField>
-					<FormFieldLabel>Username</FormFieldLabel>
-					<Input id="username" name="username" value={data.username} autoFocus autoComplete="username" onChange={(e) => setData('username', e.target.value)} required />
-					{/* {errors.username && <FormFieldError>{errors.username}</FormFieldError>} */}
-					<FormFieldError error={errors.username} />
+					<FormFieldLabel>Name</FormFieldLabel>
+					<Input id="name" name="name" value={data.name} autoComplete="name" autoFocus onChange={(e) => setData('name', e.target.value)} required />
+					<FormFieldError error={errors.name} />
 				</FormField>
 
 				<FormField>

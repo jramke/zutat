@@ -3,8 +3,10 @@ import { Content, useEditor as useTiptapEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { getSlashCommandSuggestions, SlashCommand } from "./Extensions/SlashCommand";
 import AiWriter from "./Extensions/AiWriter";
+import { Cookbook } from "@/types";
+import { Context } from "./Extensions/Context";
 
-export default function useEditor({ content }: { content: Content | undefined }) {
+export default function useEditor({ content, cookbook }: { content: Content | undefined, cookbook: Cookbook }) {
     return useTiptapEditor({
         editorProps: {
             handleDOMEvents: {
@@ -21,6 +23,9 @@ export default function useEditor({ content }: { content: Content | undefined })
             },
         },
         extensions: [
+            Context.configure({
+                cookbook: cookbook,
+            }),
             Placeholder.configure({
                 placeholder: ({ node, editor }) => {
                     if (editor.isEmpty) {

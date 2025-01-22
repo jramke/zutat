@@ -74,7 +74,7 @@ export default function Authenticated({ children }: PropsWithChildren) {
     return (
         <Providers>
             <div className="min-h-screen">
-                <nav className="content-grid py-8 sticky top-0">
+                <nav className="content-grid py-8 sticky top-0 z-1 top-nav-bg-blur">
                     <div className="full-width-fluid">
                         <div className="flex justify-between">
                             <div className="flex items-center gap-2">
@@ -92,7 +92,7 @@ export default function Authenticated({ children }: PropsWithChildren) {
                                                     variant="secondary"
                                                     className="pe-1.5"
                                                 >
-                                                    {user.name || user.username}
+                                                    {user.name}
                                                     <ChevronDown aria-hidden="true" />
                                                 </Button>
                                             }
