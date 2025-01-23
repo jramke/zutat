@@ -7,14 +7,16 @@ import {
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Cookbook, PageProps, Recipe } from "@/types";
 import { Head, useForm, usePage } from "@inertiajs/react";
-import { FormEventHandler, ReactNode, useEffect, useRef } from "react";
+import { FormEventHandler, ReactNode, useEffect, useRef, useState } from "react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/Components/ui/tooltip";
 import { useEditor, Editor } from "@/Components/Editor";
 import * as Portal from "@radix-ui/react-portal";
 import { useNavbarAction } from "@/lib/hooks/useNavbarAction";
 import { cn } from "@/lib/utils";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "@/Components/ui/select";
-import { CircleDashed, DollarSign, Pentagon, Square, Triangle } from "lucide-react";
+import { ArrowLeftRight, CircleDashed, DollarSign, Pentagon, Square, Triangle } from "lucide-react";
+import { convert, convertMany } from "convert";
+import { Button } from "@/Components/ui/button";
 
 export default function Create({
     cookbook,
@@ -104,31 +106,32 @@ export default function Create({
         });
     };
 
-    const metadataFields: Array<{name: string, label: string, control: ReactNode}> = [
+    const metadataFields: Array<{name: keyof typeof data, label: string, control: () => JSX.Element}> = [
         { 
             name: "description", 
             label: "Description",
-            control: 
+            control: () => (
                 <textarea
                     id="description"
                     name="description"
                     placeholder="Brief description of the recipe"
-                    className="w-full rounded-none border-transparent outline-none flex textarea-autosize text-prose-body"
+                    className="w-full rounded-none border-transparent outline-none flex textarea-autosize"
                     style={{ "--min-height": "2lh" } as React.CSSProperties}
                     value={data.description}
                     onChange={(e) => {setData("description", e.target.value)}}
                 />
+            )
         },
         { 
             name: "difficulty", 
             label: "Difficulty",
-            control: 
+            control: () => (
                 <Select value={data.difficulty} onValueChange={(value) => setData("difficulty", value as string)}>
-                    <SelectTrigger className="h-auto justify-start gap-2 text-prose-body p-0 border-transparent outline-none !bg-transparent [&_svg[data-select-icon]]:hidden">
+                    <SelectTrigger className="h-auto justify-start gap-2 p-0 border-transparent outline-none !bg-transparent [&_svg[data-select-icon]]:hidden">
                         {recipeDifficultyOptions.find(option => option.value === data.difficulty)?.icon || <CircleDashed className="size-4 text-placeholder" aria-hidden="true" />}
                         {recipeDifficultyOptions.find(option => option.value === data.difficulty)?.name || <span className="text-placeholder">Choose Difficulty</span>}
                     </SelectTrigger>
-                    <SelectContent className="w-[200px]">
+                    <SelectContent className="w-[175px]">
                         {recipeDifficultyOptions.map((option) => (
                             <SelectItem 
                                 key={option.value} 
@@ -143,50 +146,95 @@ export default function Create({
                         ))}
                     </SelectContent>
                 </Select>
+            )
         },
         {
             name: "cuisine_type",
             label: "Cuisine Type",
-            control: 
+            control: () => (
                 <input
                     id="cuisine_type"
                     name="cuisine_type"
                     placeholder="Cuisine Type"
-                    className="w-full rounded-none border-transparent outline-none text-prose-body"
+                    className="w-full rounded-none border-transparent outline-none"
                     value={data.cuisine_type}
                     onChange={(e) => setData("cuisine_type", e.target.value)}
                 />
+            ) 
         },
         {
-            name: "time",
+            name: "prep_time",
             label: "Time",
-            control: 
-                <div className="flex gap-3">
-                    <label className="flex items-baseline gap-0.5">
-                        <input
-                            id="prep_time"
-                            name="prep_time"
-                            placeholder="0"
-                            className="rounded-none border-transparent outline-none text-prose-body"
-                            style={{ width: `max(calc(${data.prep_time.length}ch), 1ch)` }}
-                            value={data.prep_time}
-                            onChange={(e) => setData("prep_time", e.target.value)}
-                        />
-                        <span className="text-xs text-muted-foreground">Prep Time</span>
-                    </label>
-                    <label className="flex items-baseline gap-1">
-                        <input
-                            id="cook_time"
-                            name="cook_time"
-                            placeholder="0"
-                            className="rounded-none border-transparent outline-none text-prose-body"
-                            style={{ width: `max(calc(${data.cook_time.length}ch), 1ch)` }}
-                            value={data.cook_time}
-                            onChange={(e) => setData("cook_time", e.target.value)}
-                        />
-                        <span className="text-xs text-muted-foreground">Cook Time</span>
-                    </label>
-                </div>
+            control: () => {
+                const firstInputRef = useRef<HTMLInputElement|null>(null);
+                const [showTotalTime, setShowTotalTime] = useState(true);
+                
+                const fulltime = data.prep_time + data.cook_time;
+
+                useEffect(() => {
+                    if (!showTotalTime) {
+                        firstInputRef.current?.focus();
+                        firstInputRef.current?.select();
+                    }
+                }, [showTotalTime]);
+
+                return (
+                    <div className="flex items-center gap-3">
+                        {showTotalTime ? (
+                            <span onClick={() => setShowTotalTime(false)} className="cursor-default">
+                                {fulltime} min
+                            </span>
+                        ) : (
+                            <div className="flex gap-3">
+                                <label className="flex items-baseline gap-1">
+                                    <input
+                                        ref={firstInputRef}
+                                        id="prep_time"
+                                        name="prep_time"
+                                        placeholder="0"
+                                        className="rounded-none border-transparent outline-none tabular-nums"
+                                        style={{ 
+                                            width: `max(calc(${String(data.prep_time ?? 1).length}ch + 0.1ch), 1ch)`,
+                                        }}
+                                        value={data.prep_time}
+                                        onChange={(e) => setData("prep_time", e.target.value)}
+                                    />
+                                    <span className="text-xs text-muted-foreground">Prep Time</span>
+                                </label>
+                                <label className="flex items-baseline gap-1">
+                                    <input
+                                        id="cook_time"
+                                        name="cook_time"
+                                        placeholder="0"
+                                        className="rounded-none border-transparent outline-none tabular-nums"
+                                        style={{ 
+                                            width: `max(calc(${String(data.cook_time ?? 1).length}ch + 0.1ch), 1ch)`,
+                                        }}
+                                        value={data.cook_time}
+                                        onChange={(e) => setData("cook_time", e.target.value)}
+                                    />
+                                    <span className="text-xs text-muted-foreground">Cook Time</span>
+                                </label>
+                            </div>
+                        )}
+                        <Tooltip>
+                            <TooltipTrigger render={
+                                <Button size="icon" variant="secondary" className="size-[22px]" onClick={() => setShowTotalTime(!showTotalTime)}>
+                                    <ArrowLeftRight aria-hidden="true" className="size-3" />
+                                    <span className="sr-only">
+                                        {showTotalTime ? "Switch to separate times" : "Switch to total time"}
+                                    </span>
+                                </Button>
+                            } />
+                            <TooltipContent>
+                                <span className="text-muted-foreground text-xs">
+                                    {showTotalTime ? "Switch to separate times" : "Switch to total time"}
+                                </span>
+                            </TooltipContent>
+                        </Tooltip>
+                    </div>
+                );
+            }   
         }
     ];
 
@@ -211,7 +259,7 @@ export default function Create({
                     </FormField>
 
                     {metadataFields.map((field) => (
-                        <FormField className="grid gap-6 grid-cols-4" key={field.name}>
+                        <FormField className="grid gap-6 grid-cols-4 text-prose-body" key={field.name}>
                             <label htmlFor={field.name} className="col-span-1 text-muted-foreground font-semibold text-sm/6">{field.label}</label>
                             <div className={cn(
                                 "col-span-3 relative isolate",
@@ -219,7 +267,7 @@ export default function Create({
                                 "hover:after:bg-muted focus-within:after:bg-muted",
                                 // "focus-within:after:ring-2 focus-within:after:ring-ring focus-within:after:ring-offset-2"
                             )}>
-                                {field.control}
+                                {field.control()}
                                 <FormFieldError error={errors[field.name]} />
                             </div>
                         </FormField>
