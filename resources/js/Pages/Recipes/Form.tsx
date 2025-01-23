@@ -7,16 +7,18 @@ import {
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Cookbook, PageProps, Recipe } from "@/types";
 import { Head, useForm, usePage } from "@inertiajs/react";
-import { FormEventHandler, ReactNode, useEffect, useRef, useState } from "react";
+import { FormEventHandler, ReactNode, useEffect, useId, useRef, useState } from "react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/Components/ui/tooltip";
 import { useEditor, Editor } from "@/Components/Editor";
 import * as Portal from "@radix-ui/react-portal";
 import { useNavbarAction } from "@/lib/hooks/useNavbarAction";
 import { cn } from "@/lib/utils";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "@/Components/ui/select";
-import { ArrowLeftRight, CircleDashed, DollarSign, Pentagon, Square, Triangle } from "lucide-react";
-import { convert, convertMany } from "convert";
+import { ArrowLeftRight, CircleDashed, Minus, Pentagon, Plus, Square, Triangle, Lock, LockOpen } from "lucide-react";
 import { Button } from "@/Components/ui/button";
+import { NumberField } from '@base-ui-components/react/number-field';
+import { Toggle } from '@base-ui-components/react/toggle';
+import { useDynamicInputWidthStyle } from "@/lib/hooks/useDynamicInputWidth";
 
 export default function Create({
     cookbook,
@@ -38,26 +40,42 @@ export default function Create({
         }[option.value],
     }));
 
-    const { data, setData, post, patch,  processing, errors, reset, clearErrors, transform } = useForm({
+    let initialIngredients = recipe?.ingredients ?? [];
+    if (initialIngredients.length === 0) {
+        initialIngredients = [{ name: "Ingredients", items: [] }];
+    }
+
+    const { data, setData, post, patch,  processing, errors, reset, clearErrors, transform, isDirty } = useForm({
         title: recipe?.title ?? "",
         description: recipe?.description ?? "",
         instructions: recipe?.instructions ?? null,
-        ingredients: recipe?.ingredients ?? null,
+        ingredients: initialIngredients,
         cuisine_type: recipe?.cuisine_type ?? "",
         difficulty: recipe?.difficulty ?? null,
         prep_time: recipe?.prep_time ?? "",
         cook_time: recipe?.cook_time ?? "",
-        servings: recipe?.servings ?? null,
-    });    
+        servings: recipe?.servings ?? 1,
+        is_locked: recipe?.is_locked ?? false,
+    });
 
-    const editor = useEditor({ content: data.instructions, cookbook });
+    const editor = useEditor({ 
+        content: data.instructions, 
+        cookbook, 
+        locked: data.is_locked, 
+        onUpdate: ({ editor }) => setData("instructions", editor.getHTML() || null), 
+    }, [data.is_locked]);
 
     if (!editor) {
         return null;
     }
 
+    // useEffect(() => {
+    //     editor.setEditable(!data.is_locked);
+    // }, [data.is_locked]);
+
     const abortController = new AbortController();
     useEffect(() => {
+
         if (!data.title) {
             titleInputRef.current?.focus();
         }
@@ -84,12 +102,12 @@ export default function Create({
         const method = isEditing ? patch : post;
         const routeName = isEditing ? "recipes.update" : "recipes.store";
 
-        transform((data) => {
-            return {
-                ...data,
-                instructions: editor?.getHTML() || null,
-            };
-        });
+        // transform((data) => {
+        //     return {
+        //         ...data,
+        //         instructions: editor?.getHTML() || null,
+        //     };
+        // });
 
         method(route(routeName, { cookbook, recipe }), {
             preserveScroll: true,
@@ -119,6 +137,7 @@ export default function Create({
                     style={{ "--min-height": "2lh" } as React.CSSProperties}
                     value={data.description}
                     onChange={(e) => {setData("description", e.target.value)}}
+                    readOnly={data.is_locked}
                 />
             )
         },
@@ -126,7 +145,11 @@ export default function Create({
             name: "difficulty", 
             label: "Difficulty",
             control: () => (
-                <Select value={data.difficulty} onValueChange={(value) => setData("difficulty", value as string)}>
+                <Select
+                    value={data.difficulty} 
+                    onValueChange={(value) => setData("difficulty", value as string)}
+                    readOnly={data.is_locked}
+                >
                     <SelectTrigger className="h-auto justify-start gap-2 p-0 border-transparent outline-none !bg-transparent [&_svg[data-select-icon]]:hidden">
                         {recipeDifficultyOptions.find(option => option.value === data.difficulty)?.icon || <CircleDashed className="size-4 text-placeholder" aria-hidden="true" />}
                         {recipeDifficultyOptions.find(option => option.value === data.difficulty)?.name || <span className="text-placeholder">Choose Difficulty</span>}
@@ -159,6 +182,7 @@ export default function Create({
                     className="w-full rounded-none border-transparent outline-none"
                     value={data.cuisine_type}
                     onChange={(e) => setData("cuisine_type", e.target.value)}
+                    readOnly={data.is_locked}
                 />
             ) 
         },
@@ -169,10 +193,10 @@ export default function Create({
                 const firstInputRef = useRef<HTMLInputElement|null>(null);
                 const [showTotalTime, setShowTotalTime] = useState(true);
                 
-                const fulltime = data.prep_time + data.cook_time;
+                const fulltime = Number(data.prep_time) + Number(data.cook_time);
 
                 useEffect(() => {
-                    if (!showTotalTime) {
+                    if (!showTotalTime && !data.is_locked) {
                         firstInputRef.current?.focus();
                         firstInputRef.current?.select();
                     }
@@ -185,7 +209,7 @@ export default function Create({
                                 {fulltime} min
                             </span>
                         ) : (
-                            <div className="flex gap-3">
+                            <div className="flex gap-3" onClick={() => data.is_locked && setShowTotalTime(true)}>
                                 <label className="flex items-baseline gap-1">
                                     <input
                                         ref={firstInputRef}
@@ -194,10 +218,11 @@ export default function Create({
                                         placeholder="0"
                                         className="rounded-none border-transparent outline-none tabular-nums"
                                         style={{ 
-                                            width: `max(calc(${String(data.prep_time ?? 1).length}ch + 0.1ch), 1ch)`,
+                                            width: useDynamicInputWidthStyle(String(data.prep_time)),
                                         }}
                                         value={data.prep_time}
                                         onChange={(e) => setData("prep_time", e.target.value)}
+                                        readOnly={data.is_locked}
                                     />
                                     <span className="text-xs text-muted-foreground">Prep Time</span>
                                 </label>
@@ -208,10 +233,11 @@ export default function Create({
                                         placeholder="0"
                                         className="rounded-none border-transparent outline-none tabular-nums"
                                         style={{ 
-                                            width: `max(calc(${String(data.cook_time ?? 1).length}ch + 0.1ch), 1ch)`,
+                                            width: useDynamicInputWidthStyle(String(data.cook_time)),
                                         }}
                                         value={data.cook_time}
                                         onChange={(e) => setData("cook_time", e.target.value)}
+                                        readOnly={data.is_locked}
                                     />
                                     <span className="text-xs text-muted-foreground">Cook Time</span>
                                 </label>
@@ -219,7 +245,7 @@ export default function Create({
                         )}
                         <Tooltip>
                             <TooltipTrigger render={
-                                <Button size="icon" variant="secondary" className="size-[22px]" onClick={() => setShowTotalTime(!showTotalTime)}>
+                                <Button type="button" size="icon" variant="secondary" className="size-[22px]" onClick={() => setShowTotalTime(!showTotalTime)}>
                                     <ArrowLeftRight aria-hidden="true" className="size-3" />
                                     <span className="sr-only">
                                         {showTotalTime ? "Switch to separate times" : "Switch to total time"}
@@ -235,7 +261,44 @@ export default function Create({
                     </div>
                 );
             }   
-        }
+        },
+        {
+            name: "servings",
+            label: "Servings",
+            control: () => {
+                return (
+                    <NumberField.Root
+                        value={data.servings}
+                        onValueChange={(value) => setData("servings", value ?? 1)}
+                        min={1}
+                        step={1}
+                        max={999}
+                        smallStep={1}
+                        largeStep={2}
+                    >
+                        <NumberField.Group className="flex items-center gap-2">
+                            <NumberField.Decrement render={
+                                <Button type="button" size="icon" variant="secondary" className="size-[22px]">
+                                    <Minus aria-hidden="true" className="size-3" />
+                                </Button>
+                            } />
+                            <NumberField.Input 
+                                className="tabular-nums text-center outline-none" 
+                                style={{ 
+                                    // width: `max(calc(${String(data.servings ?? 1).length}ch + 0.1ch), 2ch)`,
+                                    width: useDynamicInputWidthStyle(String(data.servings), 2),
+                                }}
+                            />
+                            <NumberField.Increment render={
+                                <Button type="button" size="icon" variant="secondary" className="size-[22px]">
+                                    <Plus aria-hidden="true" className="size-3" />
+                                </Button>
+                            } />
+                        </NumberField.Group>
+                    </NumberField.Root>
+                );
+            }
+        },
     ];
 
     return (
@@ -254,6 +317,7 @@ export default function Create({
                             value={data.title}
                             onChange={(e) => setData("title", e.target.value)}
                             required
+                            readOnly={data.is_locked}
                         />
                         <FormFieldError error={errors.title} />
                     </FormField>
@@ -275,37 +339,103 @@ export default function Create({
 
                     {/* TODO: replace with base-ui portal if released */}
                     <Portal.Root container={navbarActionEl}>
-                        <Tooltip>
-                            <TooltipTrigger render={
-                                <LoadingButton form="recipe-editor-form" loading={processing}>{isEditing ? "Save" : "Create"}</LoadingButton>
-                            } />
-                            <TooltipContent>
-                                <span className="text-muted-foreground text-xs">⌘S</span>
-                            </TooltipContent>
-                        </Tooltip>
+                        <div className="flex gap-2">
+                            {isEditing && (
+                                <Toggle 
+                                    pressed={data.is_locked}
+                                    onPressedChange={(isLocked) => {
+                                        setData("is_locked", isLocked);
+                                        if (isLocked) {
+                                            setTimeout(() => {
+                                                submit();
+                                            }, 0);
+                                        }
+                                    }}
+                                    aria-label="Lock Recipe"
+                                    render={(props, state) => (
+                                        <Button variant="secondary" {...props}>
+                                            {state.pressed ? (
+                                                <>
+                                                    Locked
+                                                    <Lock aria-hidden="true" className="size-4" />
+                                                </>
+                                            ) : (
+                                                <>
+                                                    Editable
+                                                    <LockOpen aria-hidden="true" className="size-4" />
+                                                </>
+                                            )}
+                                        </Button>
+                                    )} 
+                                />                          
+                            )}
+                            <Tooltip>
+                                <TooltipTrigger render={
+                                    <LoadingButton disabled={data.is_locked} form="recipe-editor-form" loading={processing}>{isEditing ? "Save" : "Create"}</LoadingButton>
+                                } />
+                                <TooltipContent>
+                                    <span className="text-muted-foreground text-xs">⌘S</span>
+                                </TooltipContent>
+                            </Tooltip>
+                        </div>
                     </Portal.Root>
                 </form>
 
-                {data.ingredients && data.ingredients.length > 0 && (
-                    <>
-                        <div className="my-6 h-px bg-border"></div>
-                        {/* <p className="heading mt-6">Ingredients</p> */}
-                        <div className="space-y-6 prose">
+                <div className="my-6 h-px bg-border"></div>
+                {/* <p className="heading mt-6">Ingredients</p> */}
+                <div className="space-y-6 text-prose-body">
+                    {data.ingredients && data.ingredients.length > 0 && (
+                        <>
                             {data.ingredients.map((group, index) => (
                                 <div key={index}>
-                                    <span className="heading">{group.name || "Ingredients"}</span>
-                                    <ul>
+                                    <p className="heading mb-4">{group.name || "Ingredients"}</p>
+                                    <ul className="space-y-3">
                                         {group.items.map(({ item, quantity, unit }, index) => (
                                             <li key={index}>
-                                                {quantity} {unit} {item}
+                                                <label className="grid grid-cols-[100px_1fr] gap-1">
+                                                    <div className="grid-col-span-1 justify-self-end text-right">
+                                                        <input 
+                                                            className="rounded-none border-transparent outline-none font-semibold tabular-nums"
+                                                            value={quantity}
+                                                            onChange={(e) => {
+                                                                const newIngredients = [...data.ingredients];
+                                                                newIngredients[index].items[index].quantity = e.target.value;
+                                                                setData("ingredients", newIngredients);
+                                                            }}
+                                                            style={{ width: useDynamicInputWidthStyle(String(quantity), 2) }} 
+                                                        />
+                                                        {unit && (
+                                                            <input 
+                                                                className="rounded-none border-transparent outline-none font-semibold grid-col-span-1 justify-self-end text-right"
+                                                                value={unit} 
+                                                                onChange={(e) => {
+                                                                    const newIngredients = [...data.ingredients];
+                                                                    newIngredients[index].items[index].unit = e.target.value;
+                                                                    setData("ingredients", newIngredients);
+                                                                }}
+                                                                style={{ width: useDynamicInputWidthStyle(String(unit)) }} 
+                                                            />
+                                                        )}
+                                                    </div>
+                                                    {item}
+                                                </label>
                                             </li>
                                         ))}
                                     </ul>
+                                    <input
+                                        id="new_ingredient_group_name"
+                                        name="new_ingredient_group_name"
+                                        placeholder="New Ingredient Group"
+                                        className="rounded-none border-transparent outline-none"
+                                    />
+                                    {/* <Button size="icon" variant="ghost" className="size-7 text-muted-foreground">
+                                        <Plus aria-hidden="true" />
+                                    </Button> */}
                                 </div>
                             ))}
-                        </div>
-                    </>
-                )}
+                        </>
+                    )}
+                </div>
                 
                 <div className="my-6 h-px bg-border"></div>
                 <p className="heading">Instructions</p>

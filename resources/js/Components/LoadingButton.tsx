@@ -9,13 +9,14 @@ export interface LoadingButtonProps extends ButtonProps {
     loadingText?: string;
 };
 
-export const LoadingButton = forwardRef<HTMLButtonElement, LoadingButtonProps>(({ className, loading, children, loadingText, ...props }, ref) => {
+export const LoadingButton = forwardRef<HTMLButtonElement, LoadingButtonProps>(({ className, loading, children, disabled, loadingText, ...props }, ref) => {
+    const isDisabled = disabled || loading;
     return (
         <Button
             ref={ref}
             {...props}
             type="submit"
-            disabled={loading}
+            disabled={isDisabled}
             aria-label={loading ? (loadingText || "Loading...") : undefined}
             aria-busy={loading}
             className="grid place-items-center grid-cols-1 grid-rows-1 [&>*]:col-span-full [&>*]:row-span-full"

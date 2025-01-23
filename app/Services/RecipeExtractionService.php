@@ -38,7 +38,7 @@ class RecipeExtractionService
             "Provide the response in this JSON format: {" .
             "'title': 'recipe title', " .
             "'description': 'recipe description', " .
-            "'servings': 'number of servings', " .
+            "'servings': 'X number of servings ONLY AS AN INTEGER', " .
             "'prep_time': 'X minutes as number', " .
             "'cook_time': 'X minutes as number', " .
             "'difficulty': '" . RecipeDifficulty::EASY->value . "|" . RecipeDifficulty::MEDIUM->value . "|"  . RecipeDifficulty::HARD->value . "', " .

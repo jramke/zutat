@@ -7,7 +7,7 @@ const Input = React.forwardRef<React.ElementRef<typeof InputPrimitive>, React.Co
     ({ className, ...props }, ref) => (
         <InputPrimitive
             className={cn(
-                'h-10 w-full rounded-md border pl-3.5 text-base focus:outline-2 focus:-outline-offset-1 focus:outline-foreground',
+                'h-10 w-full rounded-md border pl-3 text-base focus:outline-2 focus:-outline-offset-1 focus:outline-foreground',
                 className
             )}
             {...props}

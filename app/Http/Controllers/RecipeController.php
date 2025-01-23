@@ -38,6 +38,7 @@ class RecipeController extends Controller
             'cook_time' => 'nullable|integer',
             'difficulty' => ['nullable', Rule::enum(RecipeDifficulty::class)],
             'cuisine_type' => 'nullable|string',
+            'is_locked' => 'nullable|boolean',
         ];
     }
 
@@ -53,6 +54,7 @@ class RecipeController extends Controller
             'cook_time' => $data['cook_time'] ?? null,
             'difficulty' => $data['difficulty'] ?? null,
             'cuisine_type' => Purify::clean($data['cuisine_type'] ?? null),
+            'is_locked' => $data['is_locked'] ?? false,
         ];
     }
 
@@ -141,6 +143,7 @@ class RecipeController extends Controller
             }
     
             $recipeData = $this->extractor->extractRecipeData($content);
+            // dd($recipeData);
             
             $recipeValidator = Validator::make($recipeData, $this->validationRules());
             if ($recipeValidator->fails()) {

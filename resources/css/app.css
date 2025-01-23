@@ -141,122 +141,6 @@
 }
 
 @layer components {
-    .button {
-        @apply 
-            gap-2 
-            rounded-md 
-            text-sm 
-            font-normal 
-            border
-            ring-offset-background
-            transition-all 
-            focus-visible:outline-none 
-            focus-visible:ring-2 
-            focus-visible:ring-ring 
-            focus-visible:ring-offset-2;
-        cursor: default;
-        isolation: isolate;
-        position: relative;
-        /* overflow: hidden; */
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        white-space: nowrap;
-        --button-bg: var(--_base);
-        --highlight-offset: 1px;
-        --mix-color: white;
-        border-color: color-mix(in hsl, var(--button-bg), var(--mix-color) 20%);
-        background-color: var(--button-bg);
-        &:hover {
-            --button-bg: color-mix(in hsl, var(--_base), var(--mix-color) 5%);
-        }
-        &:active {
-            --button-bg: color-mix(in hsl, var(--_base), var(--mix-color) 10%);
-            --highlight-offset: 0px;
-        }
-        &::after {
-            @apply transition-all;
-            content: "";
-            position: absolute;
-            inset: 0;
-            border-radius: calc(var(--radius-md) - 1px);
-            z-index: -1;
-            box-shadow: inset 0 var(--highlight-offset) 0 0 color-mix(in hsl, var(--button-bg), var(--mix-color) 35%);
-            background: linear-gradient(
-                to top,
-                var(--button-bg) 0%,
-                color-mix(in hsl, var(--button-bg), var(--mix-color) 20%) 100%
-            );
-        }
-        &:disabled {
-            opacity: 50;
-            pointer-events: none;
-        }
-        svg {
-            @apply 
-                pointer-events-none 
-                size-4 
-                shrink-0;
-        }
-        &.button-default {
-            @apply  
-                text-primary-foreground;
-            --_base: var(--color-primary);
-        }
-        &.button-secondary {
-            @apply 
-                text-secondary-foreground
-                border-secondary;
-            --_base: var(--color-secondary);
-            &::after {
-                background: white;
-                box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.1);
-            }
-        }
-        &.button-destructive {
-            @apply 
-                text-destructive-foreground;
-            --_base: var(--color-destructive);
-            --button-bg: var(--_base);
-        }
-        &.button-ghost {
-            @apply 
-                text-foreground;
-            --_base: var(--color-secondary);
-            &:not(:hover) {
-                --button-bg: transparent;
-            }
-        }
-    }
-    .content-grid {
-        & > * {
-            grid-column: content;
-        }
-        & > img,
-        & > video,
-        & > canvas,
-        & > iframe,
-        & > figure,
-        & > .breakout {
-            grid-column: breakout;
-        }
-        & > .breakout-lg {
-            grid-column: breakout-lg;
-        }
-        & > .full-width {
-            grid-column: full-width;
-        }
-        & > .full-width-content {
-            grid-column: full-width;
-            display: grid;
-            grid-template-columns: inherit;
-        }
-        & > .full-width-fluid {
-            grid-column: full-width;
-            padding-inline: var(--content-grid-padding);
-        }
-    }
-
     .top-nav-bg-blur {
         position: relative;
         isolation: isolate;
@@ -274,3 +158,5 @@
 
 @import "./book";
 @import "./tiptap";
+@import "./button";
+@import "./content-grid";

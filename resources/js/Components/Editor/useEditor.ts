@@ -1,12 +1,20 @@
 import Placeholder from "@tiptap/extension-placeholder";
-import { Content, useEditor as useTiptapEditor } from "@tiptap/react";
+import { Content, UseEditorOptions as UseTiptapEditorOptions, useEditor as useTiptapEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { getSlashCommandSuggestions, SlashCommand } from "./Extensions/SlashCommand";
 import AiWriter from "./Extensions/AiWriter";
 import { Cookbook } from "@/types";
 import { Context } from "./Extensions/Context";
+import { DependencyList } from "react";
 
-export default function useEditor({ content, cookbook }: { content: Content | undefined, cookbook: Cookbook }) {
+export interface UseEditorOptions {
+    content: Content | undefined;
+    cookbook: Cookbook;
+    locked: boolean;
+    onUpdate?: UseTiptapEditorOptions['onUpdate'];
+}
+
+export default function useEditor({ content, cookbook, locked, onUpdate }: UseEditorOptions, deps?: DependencyList) {
     return useTiptapEditor({
         editorProps: {
             handleDOMEvents: {
@@ -47,5 +55,7 @@ export default function useEditor({ content, cookbook }: { content: Content | un
         ],
         content: content,
         autofocus: false, // TODO: this is not working??
-    });
+        editable: !locked,
+        onUpdate
+    }, deps);
 }

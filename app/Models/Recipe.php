@@ -22,6 +22,7 @@ class Recipe extends Model
         'servings',
         'difficulty',
         'cuisine_type',
+        'is_locked',
         'order'
     ];
 
@@ -30,6 +31,7 @@ class Recipe extends Model
     protected $casts = [
         'instructions' => 'array',
         'ingredients' => 'array',
+        'is_locked' => 'boolean',
         // 'difficulty' => RecipeDifficulty::class,
     ];
 

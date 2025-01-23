@@ -49,6 +49,7 @@ export interface Recipe {
     prep_time: string;
     cook_time: string;
     servings: number;
+    is_locked: boolean;
     order: number;
 }
 

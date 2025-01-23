@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import useContentItemActions from "./useContentItemActions";
 import { GripVertical, Plus } from "lucide-react";
 import { Button } from "@/Components/ui/button";
+import { cn } from "@/lib/utils";
 
 export default function ContentItemMenu({ editor }: { editor: Editor }) {
     const data = useData();
@@ -15,7 +16,7 @@ export default function ContentItemMenu({ editor }: { editor: Editor }) {
             editor={editor}
             pluginKey="ContentItemMenu"
             onNodeChange={data.handleNodeChange}
-            className="pr-3 flex"
+            className={cn("pr-3 flex", !editor.isEditable && "hidden")}
             tippyOptions={{
                 offset: [0, 0]
             }}

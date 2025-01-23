@@ -1,0 +1,30 @@
+@layer components {
+    .content-grid {
+        & > * {
+            grid-column: content;
+        }
+        & > img,
+        & > video,
+        & > canvas,
+        & > iframe,
+        & > figure,
+        & > .breakout {
+            grid-column: breakout;
+        }
+        & > .breakout-lg {
+            grid-column: breakout-lg;
+        }
+        & > .full-width {
+            grid-column: full-width;
+        }
+        & > .full-width-content {
+            grid-column: full-width;
+            display: grid;
+            grid-template-columns: inherit;
+        }
+        & > .full-width-fluid {
+            grid-column: full-width;
+            padding-inline: var(--content-grid-padding);
+        }
+    }
+}
