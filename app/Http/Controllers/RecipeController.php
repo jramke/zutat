@@ -48,6 +48,7 @@ class RecipeController extends Controller
             'title' => Purify::clean($data['title']),
             'description' => Purify::clean($data['description'] ?? null),
             'instructions' => Purify::clean($data['instructions'] ?? null),
+            // 'instructions' => array_map(fn($instruction) => Purify::clean($instruction), $data['instructions'] ?? []),
             'ingredients' => array_map(fn($ingredient) => Purify::clean($ingredient), $data['ingredients'] ?? []),
             'servings' => $data['servings'] ?? 1,
             'prep_time' => $data['prep_time'] ?? null,
@@ -143,13 +144,13 @@ class RecipeController extends Controller
             }
     
             $recipeData = $this->extractor->extractRecipeData($content);
-            // dd($recipeData);
             
             $recipeValidator = Validator::make($recipeData, $this->validationRules());
-            if ($recipeValidator->fails()) {
-                return back()->withErrors($recipeValidator->errors());
-            }
-            $validRecipeData = $recipeValidator->validated();
+
+            $validRecipeData = collect($recipeData)
+                ->except(array_keys($recipeValidator->errors()->toArray()))
+                ->toArray();
+
             $sanitizedRecipeData = $this->sanitizeRecipeData($validRecipeData);
 
             $recipe = $cookbook->recipes()->create([
@@ -157,7 +158,10 @@ class RecipeController extends Controller
                 ...$sanitizedRecipeData,
             ]);
 
-            return redirect()->route('recipes.form', ['cookbook' => $cookbook, 'recipe' => $recipe])->with('success', 'Recipe created successfully.');
+            return redirect()
+                ->route('recipes.form', ['cookbook' => $cookbook, 'recipe' => $recipe])
+                ->with('success', 'Recipe created successfully.')
+                ->withErrors($recipeValidator->errors());
             
         } catch (\Exception $e) {
             Log::error('Recipe extraction failed', [

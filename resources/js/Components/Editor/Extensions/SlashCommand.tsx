@@ -77,7 +77,7 @@ const iconClassNames = "size-4 text-muted-foreground";
 
 const DEFAULT_SLASH_COMMANDS: SlashCommandItem[] = [
     {
-        title: "Generate from URL",
+        title: "Generate new from URL",
         searchTerms: ["ai", "generate", "url", "import"],
         icon: <Link2 className={iconClassNames} />,
         command: ({ editor, range }) => {

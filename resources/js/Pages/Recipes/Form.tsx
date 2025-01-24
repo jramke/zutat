@@ -29,8 +29,8 @@ export default function Create({
     const navbarActionEl = useNavbarAction();
     const formRef = useRef<HTMLFormElement|null>(null);
 
-    // console.log(recipe);
-    // console.log(usePage().props);
+    // TODO: handle error messages from automatic recipe creation with usePage().props.errors
+
     const recipeDifficultyOptions = usePage().props.enums.recipeDifficulty.map((option) => ({
         ...option,
         icon: {

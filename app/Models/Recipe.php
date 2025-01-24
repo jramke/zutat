@@ -29,7 +29,7 @@ class Recipe extends Model
     protected $slugScopeColumn = 'cookbook_id';
 
     protected $casts = [
-        'instructions' => 'array',
+        // 'instructions' => 'array',
         'ingredients' => 'array',
         'is_locked' => 'boolean',
         // 'difficulty' => RecipeDifficulty::class,

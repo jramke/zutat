@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('slug');
             $table->string('description')->nullable();
-            $table->json('instructions')->nullable();
+            $table->text('instructions')->nullable();
             $table->json('ingredients')->nullable();
             $table->integer('servings')->default(1);
             $table->integer('prep_time')->nullable();
