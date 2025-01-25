@@ -19,7 +19,7 @@ class RecipeExtractionService
     {
         $this->conversationMessages[] = [
             'role' => 'system',
-            'content' => "You are a helpful recipe extraction assistant. You will receive recipe content from websites and answer specific questions about the recipe. Always provide concise, structured responses focused only on the asked information. Always respond in the SAME language as the recipe, also for estimated values. You will respond in JSON Format. If certain information is not available, respond with null. If the content does not include a recipe respond with null."
+            'content' => "You are a helpful recipe extraction assistant. You will receive recipe content from websites and answer specific questions about the recipe. Always provide concise, structured responses focused only on the asked information. Always respond in the SAME language as the recipe, also for estimated values. You will respond in JSON Format. If certain information is not available, respond with the value null not the string 'null'. If the content does not include a recipe respond with null."
         ];
     }
 
@@ -51,6 +51,9 @@ class RecipeExtractionService
         );
 
         Cache::put($cacheKey, $recipeData, now()->addHours(24));
+
+        // fix recursive all "null" strings in the ingredients array
+        $recipeData['ingredients'] = json_decode(str_replace('"null"', 'null', json_encode($recipeData['ingredients'])), true);
 
         return $recipeData;
     }

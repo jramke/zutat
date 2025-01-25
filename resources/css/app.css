@@ -32,7 +32,7 @@
     --color-primary-foreground: hsl(0, 0%, 96%);
 
     /* --color-secondary: hsl(25, 56%, 76%); */
-    --color-secondary: hsl(240, 4.8%, 96%);
+    --color-secondary: hsl(240, 4.8%, 95%);
     --color-secondary-foreground: var(--color-primary);
 
     --color-accent: var(--color-secondary);
@@ -138,6 +138,12 @@
 
 @utility text-placeholder {
     color: color-mix(in oklab, currentColor 50%, transparent);
+}
+
+@utility recipe-input-highlighter {
+    @apply relative isolate
+    after:-inset-x-2 after:-inset-y-1.5 after:absolute after:z-[-1] after:rounded after:transition-[background] after:ring-offset-background
+    hover:after:bg-muted focus-within:after:bg-muted;
 }
 
 @layer components {
