@@ -17,6 +17,7 @@ import { Button } from "@/Components/ui/button";
 import { Toggle } from '@base-ui-components/react/toggle';
 import Ingredients from "./Partials/Ingredients";
 import Metadata from "./Partials/Metadata";
+import { Separator } from "@/Components/ui/separator";
 
 export default function Create({
     cookbook,
@@ -175,13 +176,13 @@ export default function Create({
                     </Portal.Root>
                 </form>
 
-                <div className="my-6 h-px bg-border"></div>
+                <Separator className="my-6" />
                 {/* <p className="heading mt-6">Ingredients</p> */}
                 <div className="space-y-6 text-prose-body">
                     <Ingredients ingredients={data.ingredients} form={form} />
                 </div>
                 
-                <div className="my-6 h-px bg-border"></div>
+                <Separator className="my-6" />
                 <p className="heading">Instructions</p>
                 <Editor editor={editor} />
             </div>
