@@ -10,11 +10,18 @@ export default function Ingredients({ ingredients, form }: { ingredients: Ingred
 
     const { data, setData } = form;
 
+    // TODO: include new ingredient item input value in calculation
     const longestQuantityWithUnit = ingredients.flatMap((group) =>
         group.items.map(({ quantity, unit }) =>
             `${quantity ?? ""}${unit ?? ""}`
         )
     ).sort((a, b) => b.length - a.length)[0] ?? "";
+
+    const getQuantityAndUnit = (inputValue: string) => {
+        const quantity = inputValue.match(/\d+(?:[.,]\d+)?|[½¼]/)?.[0] ?? "";
+        const unit = inputValue.replace(quantity, "").trim();
+        return { quantity, unit };
+    };
 
     const handleGroupNameChange = (e: ChangeEvent<HTMLInputElement>, groupIndex: number) => {
         const newIngredients = [...ingredients];
@@ -24,8 +31,7 @@ export default function Ingredients({ ingredients, form }: { ingredients: Ingred
 
     const handleQuantityUnitChange = (e: ChangeEvent<HTMLInputElement>, groupIndex: number, itemIndex: number) => {
         const inputValue = e.target.value;
-        const quantity = inputValue.match(/\d+(?:[.,]\d+)?|[½¼]/)?.[0] ?? "";
-        const unit = inputValue.replace(quantity, "").trim();
+        const { quantity, unit } = getQuantityAndUnit(inputValue);
         
         const newIngredients = [...ingredients];
 
@@ -59,13 +65,17 @@ export default function Ingredients({ ingredients, form }: { ingredients: Ingred
         const form = e.target as HTMLFormElement;
         const formData = new FormData(form);
 
-        const newIngredient = formData.get("new-ingredient");
+        const newIngredient = formData.get("new-ingredient") as string;
+        
         if (!newIngredient) {
             return;
         }
 
+        const newQuantityUnit = formData.get("new-amount-unit") as string;
+        const { quantity, unit } = getQuantityAndUnit(newQuantityUnit ?? "");
+
         const newIngredients = [...ingredients];
-        newIngredients[groupIndex].items.push({ item: newIngredient as string, quantity: "", unit: "" });
+        newIngredients[groupIndex].items.push({ item: newIngredient, quantity, unit });
         setData("ingredients", newIngredients);
         form.reset();
     };
@@ -104,7 +114,7 @@ export default function Ingredients({ ingredients, form }: { ingredients: Ingred
                             {group.items.map(({ item, quantity, unit }, itemIndex) => (
                                 <li key={`item-${itemIndex}`}>
                                     <label className="grid gap-2.5" style={{ gridTemplateColumns: `${useDynamicInputWidthStyle(longestQuantityWithUnit, 4)} 1fr`}}>
-                                        <div className="grid-col-span-1 justify-self-end flex gap-1 items-center">
+                                        <div className="grid-col-span-1 justify-self-end">
                                             <div className={"recipe-input-highlighter after:-inset-x-1.5 after:-inset-y-1"}>
                                                 <input 
                                                     className="w-full rounded-none border-transparent outline-none font-semibold tabular-nums text-right"
@@ -127,12 +137,27 @@ export default function Ingredients({ ingredients, form }: { ingredients: Ingred
                             ))}
                             {!data.is_locked && (
                                 <li>
-                                    <form className="recipe-input-highlighter" onSubmit={(e) => handleAddIngredient(e, groupIndex)}>
-                                        <input
-                                            name="new-ingredient"
-                                            placeholder="New Ingredient"
-                                            className="rounded-none border-transparent outline-none"
-                                        />
+                                    <form onSubmit={(e) => handleAddIngredient(e, groupIndex)}>
+                                        {/* the hidden submit is needed so the form submits on enter if there are 2 fields */}
+                                        <input type="submit" className="hidden" tabIndex={-1} />
+                                        <div className="grid gap-2.5" style={{ gridTemplateColumns: `${useDynamicInputWidthStyle(longestQuantityWithUnit, 4)} 1fr`}}>
+                                            <div className="recipe-input-highlighter grid-col-span-1 justify-self-end">
+                                                <input
+                                                    name="new-amount-unit"
+                                                    placeholder=""
+                                                    onChange={() => console.log("change")}
+                                                    className="w-full rounded-none border-transparent outline-none font-semibold tabular-nums text-right"
+                                                />
+                                            </div>
+                                            <div className="recipe-input-highlighter">
+                                                <input
+                                                    name="new-ingredient"
+                                                    placeholder="New Ingredient"
+                                                    onChange={() => console.log("change")}
+                                                    className="w-full rounded-none border-transparent outline-none"
+                                                />
+                                            </div>
+                                        </div>
                                     </form>
                                 </li>
                             )}
