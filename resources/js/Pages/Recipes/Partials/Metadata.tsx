@@ -171,10 +171,17 @@ export default function Metadata({ form }: { form: TODO }) {
             name: "servings",
             label: "Servings",
             control: () => {
+                const value = data.is_locked ? data.scaled_servings : data.servings;
                 return (
                     <NumberField.Root
-                        value={data.servings}
-                        onValueChange={(value) => setData("servings", value ?? 1)}
+                        value={value}
+                        onValueChange={(value) => {
+                            if (data.is_locked) {
+                                setData("scaled_servings", value ?? 1);
+                            } else {
+                                setData("servings", value ?? 1);
+                            }
+                        }}
                         min={1}
                         step={1}
                         max={999}
@@ -190,8 +197,7 @@ export default function Metadata({ form }: { form: TODO }) {
                             <NumberField.Input 
                                 className="tabular-nums text-center outline-none" 
                                 style={{ 
-                                    // width: `max(calc(${String(data.servings ?? 1).length}ch + 0.1ch), 2ch)`,
-                                    width: useDynamicInputWidthStyle(String(data.servings), 2),
+                                    width: useDynamicInputWidthStyle(String(value), 2),
                                 }}
                             />
                             <NumberField.Increment render={

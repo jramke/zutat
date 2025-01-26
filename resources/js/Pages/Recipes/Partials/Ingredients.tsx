@@ -10,6 +10,24 @@ export default function Ingredients({ ingredients, form }: { ingredients: Ingred
 
     const { data, setData } = form;
 
+    // console.log("Ingredients", ingredients, form);
+    
+    // const ingredientsWithScaledQuantity = ingredients.flatMap((group) =>
+    //     group.items.map(({ quantity, unit }) => {
+    //         if (!quantity) {
+    //             return { quantity: "", unit: unit ?? "" };
+    //         }
+
+    //         if (data.is_locked) {
+    //             return { quantity: String((parseFloat(quantity) / data.servings * data.scaled_servings).toFixed(2)).replace('.00', ''), unit: unit ?? "" };
+    //         }
+
+    //         return { quantity, unit: unit ?? "" };
+    //     })
+    // );
+    // console.log(ingredientsWithScaledQuantity);
+    
+
     const [newIngredientQuantity, setNewIngredientQuantity] = useState("");
     const [newIngredientUnit, setNewIngredientUnit] = useState("");
 
@@ -20,10 +38,20 @@ export default function Ingredients({ ingredients, form }: { ingredients: Ingred
         setNewIngredientUnit(unit);
     };
 
+    const getScaledQuantity = (quantity: string) => {
+        if (!quantity) {
+            return "";
+        }
+        return String((parseFloat(quantity) / data.servings * data.scaled_servings).toFixed(2)).replace('.00', '');
+    };
+
     const flatIngredientsWithNew = [...ingredients.flatMap((group) =>
-        group.items.map(({ quantity, unit }) =>
-            `${quantity ?? ""} ${unit ?? ""}`
-        )
+        group.items.map(({ quantity, unit }) => {
+            if (data.is_locked) {
+                quantity = getScaledQuantity(quantity);
+            }
+            return `${quantity ?? ""} ${unit ?? ""}`;
+        })
     ), `${newIngredientQuantity} ${newIngredientUnit}`];
     const longestQuantityWithUnit = flatIngredientsWithNew.sort((a, b) => b.length - a.length)[0] ?? "";
 
@@ -54,12 +82,19 @@ export default function Ingredients({ ingredients, form }: { ingredients: Ingred
         if (!quantity && !unit) {
             return "";
         }
+
         if (!quantity) {
             return unit;
         }
+
+        if (data.is_locked) {
+            quantity = getScaledQuantity(quantity);
+        }
+
         if (!unit) {
             return quantity;
         }
+
         return `${quantity} ${unit}`;
     };
 

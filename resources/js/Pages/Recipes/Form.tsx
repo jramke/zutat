@@ -30,8 +30,6 @@ export default function Create({
 
     // TODO: handle error messages from automatic recipe creation with usePage().props.errors
 
-    
-
     let initialIngredients = recipe?.ingredients ?? [];
     if (initialIngredients.length === 0) {
         initialIngredients = [{ name: "Ingredients", items: [] }];
@@ -47,10 +45,10 @@ export default function Create({
         prep_time: recipe?.prep_time ?? "",
         cook_time: recipe?.cook_time ?? "",
         servings: recipe?.servings ?? 1,
+        scaled_servings: recipe?.servings ?? 1,
         is_locked: recipe?.is_locked ?? false,
     });
     const { data, setData, post, patch,  processing, errors, clearErrors } = form;
-    // type RecipeForm = typeof form;
 
     const editor = useEditor({ 
         content: data.instructions, 
