@@ -18,6 +18,7 @@ import { Toggle } from '@base-ui-components/react/toggle';
 import Ingredients from "./Partials/Ingredients";
 import Metadata from "./Partials/Metadata";
 import { Separator } from "@/Components/ui/separator";
+import useWakeLock from "@/lib/hooks/useWakeLock";
 
 export default function Create({
     cookbook,
@@ -27,6 +28,8 @@ export default function Create({
     const titleInputRef = useRef<HTMLTextAreaElement|null>(null);
     const navbarActionEl = useNavbarAction();
     const formRef = useRef<HTMLFormElement|null>(null);
+
+    const { release, request } = useWakeLock();
 
     // TODO: handle error messages from automatic recipe creation with usePage().props.errors
 
@@ -61,9 +64,9 @@ export default function Create({
         return null;
     }
 
-    const abortController = new AbortController();
     useEffect(() => {
-
+        const abortController = new AbortController();
+        
         if (!data.title) {
             titleInputRef.current?.focus();
         }
@@ -75,8 +78,15 @@ export default function Create({
             }
         });
 
+        if (data.is_locked) {
+            request();
+        } else {
+            release();
+        }
+
         return () => {
             abortController.abort();
+            release();
         };
     }, []);
 
@@ -140,9 +150,12 @@ export default function Create({
                                     onPressedChange={(isLocked) => {
                                         setData("is_locked", isLocked);
                                         if (isLocked) {
+                                            request();
                                             setTimeout(() => {
                                                 submit();
                                             }, 0);
+                                        } else {
+                                            release();
                                         }
                                     }}
                                     aria-label="Lock Recipe"
