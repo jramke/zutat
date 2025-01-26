@@ -1,7 +1,7 @@
 import { useDynamicInputWidthStyle } from "@/lib/hooks/useDynamicInputWidth";
 import { cn } from "@/lib/utils";
 import { IngredientGroup, TODO } from "@/types";
-import { ChangeEvent, FormEvent, FormEventHandler } from "react";
+import { ChangeEvent, ChangeEventHandler, FormEvent, FormEventHandler, useState } from "react";
 
 export default function Ingredients({ ingredients, form }: { ingredients: IngredientGroup[], form: TODO  }) {
     if (!ingredients || ingredients.length === 0) {
@@ -10,12 +10,22 @@ export default function Ingredients({ ingredients, form }: { ingredients: Ingred
 
     const { data, setData } = form;
 
-    // TODO: include new ingredient item input value in calculation
-    const longestQuantityWithUnit = ingredients.flatMap((group) =>
+    const [newIngredientQuantity, setNewIngredientQuantity] = useState("");
+    const [newIngredientUnit, setNewIngredientUnit] = useState("");
+
+    const handleNewIngredientQuantityChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+        const inputValue = e.target.value;
+        const { quantity, unit } = getQuantityAndUnit(inputValue);
+        setNewIngredientQuantity(quantity);
+        setNewIngredientUnit(unit);
+    };
+
+    const flatIngredientsWithNew = [...ingredients.flatMap((group) =>
         group.items.map(({ quantity, unit }) =>
-            `${quantity ?? ""}${unit ?? ""}`
+            `${quantity ?? ""} ${unit ?? ""}`
         )
-    ).sort((a, b) => b.length - a.length)[0] ?? "";
+    ), `${newIngredientQuantity} ${newIngredientUnit}`];
+    const longestQuantityWithUnit = flatIngredientsWithNew.sort((a, b) => b.length - a.length)[0] ?? "";
 
     const getQuantityAndUnit = (inputValue: string) => {
         const quantity = inputValue.match(/\d+(?:[.,]\d+)?|[½¼]/)?.[0] ?? "";
@@ -114,7 +124,7 @@ export default function Ingredients({ ingredients, form }: { ingredients: Ingred
                             {group.items.map(({ item, quantity, unit }, itemIndex) => (
                                 <li key={`item-${itemIndex}`}>
                                     <label className="grid gap-2.5" style={{ gridTemplateColumns: `${useDynamicInputWidthStyle(longestQuantityWithUnit, 4)} 1fr`}}>
-                                        <div className="grid-col-span-1 justify-self-end">
+                                        <div className="grid-col-span-1 justify-self-end w-full">
                                             <div className={"recipe-input-highlighter after:-inset-x-1.5 after:-inset-y-1"}>
                                                 <input 
                                                     className="w-full rounded-none border-transparent outline-none font-semibold tabular-nums text-right"
@@ -145,7 +155,7 @@ export default function Ingredients({ ingredients, form }: { ingredients: Ingred
                                                 <input
                                                     name="new-amount-unit"
                                                     placeholder=""
-                                                    onChange={() => console.log("change")}
+                                                    onChange={handleNewIngredientQuantityChange}
                                                     className="w-full rounded-none border-transparent outline-none font-semibold tabular-nums text-right"
                                                 />
                                             </div>
@@ -153,7 +163,6 @@ export default function Ingredients({ ingredients, form }: { ingredients: Ingred
                                                 <input
                                                     name="new-ingredient"
                                                     placeholder="New Ingredient"
-                                                    onChange={() => console.log("change")}
                                                     className="w-full rounded-none border-transparent outline-none"
                                                 />
                                             </div>
