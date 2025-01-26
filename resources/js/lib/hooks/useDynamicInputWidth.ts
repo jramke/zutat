@@ -4,7 +4,7 @@ export function useDynamicInputWidthStyle(inputData: string, minLength: number =
     const smallCharRegex = /[ilj.,:;'"\(\)\[\]\{\}<>\|\/\\^\s]/g;
 
     const smallCharCount = (inputData.match(smallCharRegex) || []).length;
-    length -= smallCharCount * 0.5;
+    length -= smallCharCount * 0.3;
 
     return `max(calc(${length}ch + 0.1ch), ${minLength}ch)`;
 }
