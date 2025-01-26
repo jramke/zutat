@@ -10,6 +10,7 @@ export interface User {
 export interface Breadcrumb {
     title: string;
     url: string;
+    mobile: string;
 }
 
 export interface OptionEnum {

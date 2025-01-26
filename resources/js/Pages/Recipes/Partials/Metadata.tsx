@@ -81,7 +81,7 @@ export default function Metadata({ form }: { form: TODO }) {
             label: "Nutrition",
             control: () => {
                 return (
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 flex-wrap">
                         <label className="flex items-baseline gap-1">
                             <input
                                 id="calories"
@@ -270,9 +270,9 @@ export default function Metadata({ form }: { form: TODO }) {
     return (
         <>
             {metadataFields.map((field) => (
-                <FormField className="grid gap-6 grid-cols-4 text-prose-body" key={field.name}>
-                    <label htmlFor={field.name} className="col-span-1 text-muted-foreground font-semibold text-sm/6">{field.label}</label>
-                    <div className="recipe-input-highlighter col-span-3">
+                <FormField className="grid gap-6 grid-cols-6 sm:grid-cols-4 text-prose-body" key={field.name}>
+                    <label htmlFor={field.name} className="col-span-2 sm:col-span-1 text-muted-foreground font-semibold text-sm/6">{field.label}</label>
+                    <div className="recipe-input-highlighter col-span-4 sm:col-span-3">
                         {field.control()}
                         <FormFieldError error={errors[field.name]} />
                     </div>

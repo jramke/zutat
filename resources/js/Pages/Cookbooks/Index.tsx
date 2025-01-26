@@ -4,16 +4,27 @@ import { Cookbook, PageProps } from "@/types";
 import { Head } from "@inertiajs/react";
 import CreateCookbookForm from "./Partials/CreateForm";
 import { useState } from "react";
+import { useWindowSize } from "@/lib/hooks/useWindowSize";
 
 export default function Edit({
     cookbooks,
     auth,
 }: PageProps<{ cookbooks: Cookbook[] }>) {
-    // const [cookbooksState, setCookbooksState] = useState<Cookbook[]>(cookbooks);
-    const [createCookbookDialogOpen, setCreateCookbookDialogOpen] = useState(false);
+    const { width } = useWindowSize();
+
+    let chunkSize = 1;
+    if (width > 465) {
+        chunkSize = 2;
+    }
+    if (width > 700) {
+        chunkSize = 3;
+    }
+    if (width > 1080) {
+        chunkSize = 4;
+    }
 
     const cookbooksWithPlaceholder = [null, ...cookbooks];
-    const chunkSize = 4;
+
     const chunkedCookbooks = cookbooksWithPlaceholder.reduce(
         (resultArr: (typeof cookbooksWithPlaceholder)[], item, index) => {
             const chunkIndex = Math.floor(index / chunkSize);
@@ -37,7 +48,7 @@ export default function Edit({
                 {cookbooks?.length > 0 ? (
                     <>
                         {chunkedCookbooks.map((cookbooks, index) => (
-                            <Bookshelf key={index}>
+                            <Bookshelf key={index} columns={chunkSize}>
                                 {cookbooks.map((cookbook) => {
                                     if (cookbook === null) {
                                         return (

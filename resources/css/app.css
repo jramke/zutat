@@ -58,6 +58,14 @@
 }
 
 @layer base {
+    :root {
+        @media (max-width: 800px) {
+            --spacing-section: calc(var(--spacing) * 10);
+        }
+        @media (max-width: 500px) {
+            --spacing-section: calc(var(--spacing) * 8);
+        }
+    }
     * {
         @apply border-border;
         /* caret-color: var(--color-brand); */

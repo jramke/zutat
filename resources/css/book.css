@@ -1,5 +1,9 @@
 @layer components {
     .bookshelf {
+        --columns: 4;
+        --book-height: 165px;
+        --book-width: 130px;
+        --gap: 2rem;
         @apply text-foreground;
         height: 20px;
         background-image: url("/images/wood-texture.png");
@@ -8,6 +12,15 @@
         perspective: 100px;
         margin-top: 200px;
         margin-bottom: 65px;
+        /* @media (max-width: 500px) {
+            --book-height: 125px;
+            --book-width: 100px;
+        }
+        @media (max-width: 385px) {
+            --gap: 1.25rem;
+            --book-height: 110px;
+            --book-width: 90px;
+        } */
         &::before {
             content: "";
             position: absolute;
@@ -40,16 +53,17 @@
 
         .bookshelf-item-wrapper {
             position: absolute;
-            height: 185px;
+            height: auto;
             width: calc(100% - 25%);
             left: 50%;
             bottom: 100%;
             padding: 15px 4px 10px 4px;
             transform: translateX(-50%);
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 2rem;
+            grid-template-columns: repeat(var(--columns), 1fr);
+            gap: var(--gap);
             overflow: hidden;
+            justify-items: center;
         }
     }
 
@@ -80,6 +94,8 @@
         --spring-duration: 0.6242s;
         position: relative;
         isolation: isolate;
+        height: var(--book-height, 100%);
+        width: var(--book-width, 130px);
         &:hover,
         &:focus-visible {
             .book-cover {

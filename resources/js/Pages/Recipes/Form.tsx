@@ -24,7 +24,7 @@ export default function Create({
     recipe,
 }: PageProps<{ cookbook: Cookbook, recipe: Recipe|null }>) {
     const isEditing = !!recipe;
-    const titleInputRef = useRef<HTMLInputElement|null>(null);
+    const titleInputRef = useRef<HTMLTextAreaElement|null>(null);
     const navbarActionEl = useNavbarAction();
     const formRef = useRef<HTMLFormElement|null>(null);
 
@@ -114,12 +114,13 @@ export default function Create({
                 <form ref={formRef} onSubmit={onSubmit} className="not-prose space-y-6" id="recipe-editor-form">
                     <FormField>
                         <FormFieldLabel className="sr-only">Title</FormFieldLabel>
-                        <input
+                        <textarea
                             ref={titleInputRef}
                             id="title"
                             name="title"
                             placeholder="New Recipe"
-                            className="w-full heading rounded-none border-transparent outline-none"
+                            className="w-full heading rounded-none border-transparent outline-none textarea-autosize"
+                            style={{ "--min-height": "1lh" } as React.CSSProperties}
                             value={data.title}
                             onChange={(e) => setData("title", e.target.value)}
                             required

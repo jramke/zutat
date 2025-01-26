@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cookbook;
-use App\Models\User;
 use App\Services\Breadcrumbs;
-// use Diglactic\Breadcrumbs\Breadcrumbs;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -14,6 +12,8 @@ class CookbookController extends Controller
 {
     public function index(Request $request): Response
     {
+        Breadcrumbs::generate('cookbooks.index');
+
         return Inertia::render('Cookbooks/Index', [
             'cookbooks' => $request->user()->cookbooks,
         ]);
