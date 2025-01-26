@@ -1,4 +1,5 @@
 import { FormField, FormFieldError, FormFieldLabel } from "@/Components/ui/form-field";
+import { cn } from "@/lib/utils";
 import { useForm, usePage, router } from "@inertiajs/react";
 import { mergeAttributes, Node } from "@tiptap/core";
 import {
@@ -6,6 +7,7 @@ import {
     NodeViewProps,
     NodeViewWrapper,
 } from "@tiptap/react";
+import { Loader2 } from "lucide-react";
 import { FormEventHandler, KeyboardEventHandler, useEffect, useRef } from "react";
 
 function View({ editor, node, getPos, deleteNode }: NodeViewProps) {
@@ -38,7 +40,6 @@ function View({ editor, node, getPos, deleteNode }: NodeViewProps) {
                 if (page.props.errors.url) {
                     return true;
                 }
-                // Object.keys(page.props.errors).length !== 0
                 return false;
             },
             onError: (response) => {
@@ -49,7 +50,7 @@ function View({ editor, node, getPos, deleteNode }: NodeViewProps) {
                 console.log("success", response);
                 // router.reload()
             },
-        })
+        });
     }
 
     const onKeyDown: KeyboardEventHandler = (e) => {
@@ -76,7 +77,10 @@ function View({ editor, node, getPos, deleteNode }: NodeViewProps) {
                         ref={inputRef}
                         name="url"
                         value={data.url}
-                        className="rounded-none border-transparent outline-none w-full textarea-autosize"
+                        className={cn(
+                            "rounded-none border-transparent outline-none w-full textarea-autosize",
+                            processing && "opacity-50",
+                        )}
                         style={{ "--min-height": "1lh" } as React.CSSProperties}
                         placeholder={node.attrs.placeholder}
                         onKeyDown={onKeyDown}
@@ -86,10 +90,16 @@ function View({ editor, node, getPos, deleteNode }: NodeViewProps) {
                             }, 0);
                         }}
                         onChange={(e) => setData("url", e.target.value)}
+                        readOnly={processing}
                     />
                     <FormFieldError error={errors.url} />
                 </FormField>
-                {processing && (<span>Processing</span>)}
+                {processing && (
+                    <div className="text-sm text-muted-foreground flex items-center">
+                        <Loader2 className="animate-spin mr-2 size-4" aria-hidden="true" />
+                        Generating...
+                    </div>
+                )}
             </form>
         </NodeViewWrapper>
     );
