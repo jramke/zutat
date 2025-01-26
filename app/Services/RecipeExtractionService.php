@@ -43,7 +43,6 @@ class RecipeExtractionService
             "'cook_time': 'X minutes as number', " .
             "'difficulty': '" . RecipeDifficulty::EASY->value . "|" . RecipeDifficulty::MEDIUM->value . "|"  . RecipeDifficulty::HARD->value . "', " .
             "'nutrition_per_serving': {'calories': number, 'protein': number, 'carbs': number, 'fat': number}, " .
-            "'cuisine_type': 'type of cuisine', " .
             // "'instructions': 'Provide the FULL complete cooking instructions from the recipe as they are in an HTML string. Prefer an ordered list but NEVER add or skip something from the instructions. Wrap the content of each <li> item in a <p> to match prosemirror format', " .
             "'instructions': 'Provide the FULL complete cooking instructions from the recipe as they are as an HTML string with an appropiate format. Seperate the steps into paragraphs', " .
             "'ingredients': 'List all ingredients with their quantities as an array of one or more groups with this format: [{'name': 'name of group', 'items': [{'item': 'ingredient name', 'quantity': 'amount', 'unit': 'measurement unit'}]}]' " .

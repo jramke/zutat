@@ -21,7 +21,6 @@ class Recipe extends Model
         'cook_time', 
         'servings',
         'difficulty',
-        'cuisine_type',
         'is_locked',
         'order'
     ];

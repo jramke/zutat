@@ -77,21 +77,6 @@ export default function Metadata({ form }: { form: TODO }) {
             )
         },
         {
-            name: "cuisine_type",
-            label: "Cuisine Type",
-            control: () => (
-                <input
-                    id="cuisine_type"
-                    name="cuisine_type"
-                    placeholder="Cuisine Type"
-                    className="w-full rounded-none border-transparent outline-none"
-                    value={data.cuisine_type}
-                    onChange={(e) => setData("cuisine_type", e.target.value)}
-                    readOnly={data.is_locked}
-                />
-            ) 
-        },
-        {
             name: "prep_time",
             label: "Time",
             control: () => {

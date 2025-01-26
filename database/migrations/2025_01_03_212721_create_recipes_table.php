@@ -24,7 +24,6 @@ return new class extends Migration
             $table->integer('prep_time')->nullable();
             $table->integer('cook_time')->nullable();
             $table->string('difficulty')->nullable();
-            $table->string('cuisine_type')->nullable();
             $table->boolean('is_locked')->default(false);
             $table->integer('order')->default(0);
             $table->timestamps();

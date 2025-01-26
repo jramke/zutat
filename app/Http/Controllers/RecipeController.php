@@ -37,7 +37,6 @@ class RecipeController extends Controller
             'prep_time' => 'nullable|integer',
             'cook_time' => 'nullable|integer',
             'difficulty' => ['nullable', Rule::enum(RecipeDifficulty::class)],
-            'cuisine_type' => 'nullable|string',
             'is_locked' => 'nullable|boolean',
         ];
     }
@@ -54,7 +53,6 @@ class RecipeController extends Controller
             'prep_time' => $data['prep_time'] ?? null,
             'cook_time' => $data['cook_time'] ?? null,
             'difficulty' => $data['difficulty'] ?? null,
-            'cuisine_type' => Purify::clean($data['cuisine_type'] ?? null),
             'is_locked' => $data['is_locked'] ?? false,
         ];
     }

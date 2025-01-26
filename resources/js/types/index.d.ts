@@ -44,7 +44,6 @@ export interface Recipe {
     description: string;
     instructions: any;
     ingredients: IngredientGroup[];
-    cuisine_type: string;
     difficulty: string;
     prep_time: string;
     cook_time: string;

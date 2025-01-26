@@ -40,7 +40,6 @@ export default function Create({
         description: recipe?.description ?? "",
         instructions: recipe?.instructions ?? null,
         ingredients: initialIngredients,
-        cuisine_type: recipe?.cuisine_type ?? "",
         difficulty: recipe?.difficulty ?? null,
         prep_time: recipe?.prep_time ?? "",
         cook_time: recipe?.cook_time ?? "",
