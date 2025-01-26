@@ -14,7 +14,6 @@ class ValidIngredientStructure implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        // dd($value);
         foreach ($value as $group) {
             if (!array_key_exists('name', $group)) {
                 $fail("The group name needs to be set.");

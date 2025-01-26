@@ -44,6 +44,7 @@ export interface Recipe {
     description: string;
     instructions: any;
     ingredients: IngredientGroup[];
+    nutrition_per_serving: Nutrition;
     difficulty: string;
     prep_time: string;
     cook_time: string;
@@ -61,4 +62,11 @@ export interface Ingredient {
     item: string;
     quantity: string;
     unit: string;
+}
+
+export interface Nutrition {
+    calories: number;
+    fat: number;
+    carbs: number;
+    protein: number;
 }

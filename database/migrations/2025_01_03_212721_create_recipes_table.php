@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->text('instructions')->nullable();
             $table->json('ingredients')->nullable();
+            $table->json('nutrition_per_serving')->nullable();
             $table->integer('servings')->default(1);
             $table->integer('prep_time')->nullable();
             $table->integer('cook_time')->nullable();

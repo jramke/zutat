@@ -35,6 +35,9 @@ function View({ editor, node, getPos, deleteNode }: NodeViewProps) {
         post(route("recipes.from-url", { cookbook }), {
             preserveScroll: true,
             preserveState: (page) => {
+                if (page.props.errors.url) {
+                    return true;
+                }
                 // Object.keys(page.props.errors).length !== 0
                 return false;
             },

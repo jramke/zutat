@@ -77,6 +77,76 @@ export default function Metadata({ form }: { form: TODO }) {
             )
         },
         {
+            name: "nutrition_per_serving", 
+            label: "Nutrition",
+            control: () => {
+                return (
+                    <div className="flex items-center gap-3">
+                        <label className="flex items-baseline gap-1">
+                            <input
+                                id="calories"
+                                name="calories"
+                                placeholder="0"
+                                className="rounded-none border-transparent outline-none tabular-nums"
+                                style={{ 
+                                    width: useDynamicInputWidthStyle(String(data.nutrition_per_serving?.calories ?? 0)),
+                                }}
+                                value={data.nutrition_per_serving?.calories}
+                                onChange={(e) => setData("nutrition_per_serving", { ...data.nutrition_per_serving, calories: e.target.value })}
+                                readOnly={data.is_locked}
+                            />
+                            <span className="text-xs text-muted-foreground">Kcal</span>
+                        </label>
+                        <label className="flex items-baseline gap-1">
+                            <input
+                                id="protein"
+                                name="protein"
+                                placeholder="0"
+                                className="rounded-none border-transparent outline-none tabular-nums"
+                                style={{ 
+                                    width: useDynamicInputWidthStyle(String(data.nutrition_per_serving?.protein ?? 0)),
+                                }}
+                                value={data.nutrition_per_serving?.protein}
+                                onChange={(e) => setData("nutrition_per_serving", { ...data.nutrition_per_serving, protein: e.target.value })}
+                                readOnly={data.is_locked}
+                            />
+                            <span className="text-xs text-muted-foreground">Protein</span>
+                        </label>
+                        <label className="flex items-baseline gap-1">
+                            <input
+                                id="carbs"
+                                name="carbs"
+                                placeholder="0"
+                                className="rounded-none border-transparent outline-none tabular-nums"
+                                style={{ 
+                                    width: useDynamicInputWidthStyle(String(data.nutrition_per_serving?.carbs ?? 0)),
+                                }}
+                                value={data.nutrition_per_serving?.carbs}
+                                onChange={(e) => setData("nutrition_per_serving", { ...data.nutrition_per_serving, carbs: e.target.value })}
+                                readOnly={data.is_locked}
+                            />
+                            <span className="text-xs text-muted-foreground">Carbs</span>
+                        </label>
+                        <label className="flex items-baseline gap-1">
+                            <input
+                                id="fat"
+                                name="fat"
+                                placeholder="0"
+                                className="rounded-none border-transparent outline-none tabular-nums"
+                                style={{ 
+                                    width: useDynamicInputWidthStyle(String(data.nutrition_per_serving?.fat ?? 0)),
+                                }}
+                                value={data.nutrition_per_serving?.fat}
+                                onChange={(e) => setData("nutrition_per_serving", { ...data.nutrition_per_serving, fat: e.target.value })}
+                                readOnly={data.is_locked}
+                            />
+                            <span className="text-xs text-muted-foreground">Fat</span>
+                        </label>
+                    </div>
+                );
+            },
+        },
+        {
             name: "prep_time",
             label: "Time",
             control: () => {

@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 use App\Rules\ValidIngredientStructure;
+use App\Rules\ValidNutritionPerServingStructure;
 use Illuminate\Support\Facades\Validator;
 use Stevebauman\Purify\Facades\Purify;
 use Illuminate\Validation\Rule;
@@ -33,6 +34,7 @@ class RecipeController extends Controller
             'description' => 'nullable|string',
             'instructions' => 'nullable|string',
             'ingredients' => ['nullable', 'array', new ValidIngredientStructure],
+            'nutrition_per_serving' => ['nullable', 'array', new ValidNutritionPerServingStructure],
             'servings' => 'nullable|integer|min:1',
             'prep_time' => 'nullable|integer',
             'cook_time' => 'nullable|integer',
@@ -49,6 +51,7 @@ class RecipeController extends Controller
             'instructions' => Purify::clean($data['instructions'] ?? null),
             // 'instructions' => array_map(fn($instruction) => Purify::clean($instruction), $data['instructions'] ?? []),
             'ingredients' => array_map(fn($ingredient) => Purify::clean($ingredient), $data['ingredients'] ?? []),
+            'nutrition_per_serving' => $data['nutrition_per_serving'] ?? null,
             'servings' => $data['servings'] ?? 1,
             'prep_time' => $data['prep_time'] ?? null,
             'cook_time' => $data['cook_time'] ?? null,
