@@ -123,20 +123,36 @@ class RecipeController extends Controller
             }
 
             $html = $response->getBody();
-            /** @disregard */
-            $dom = \Dom\HTMLDocument::createFromString($html, LIBXML_NOERROR);
-    
-            $main = $dom->querySelector('main');
+            // /** @disregard */
+            // $dom = \Dom\HTMLDocument::createFromString($html, LIBXML_NOERROR);
+            $dom = new \DOMDocument();
+            $dom->loadHTML($html, LIBXML_NOERROR);
+            $xpath = new \DOMXPath($dom);
+
+            // $main = $dom->querySelector('main');
+            // if (!$main) {
+            //     $main = $dom->body;
+            // }
+            $main = $xpath->query('//main')->item(0);
             if (!$main) {
-                $main = $dom->body;
+                $main = $dom->getElementsByTagName('body')->item(0);
+            }
+
+            // $excludes = $main->querySelectorAll('body>header, footer, aside, nav, script, form, button, input, select, textarea, style');
+            // foreach ($excludes as $exclude) {
+            //     $exclude->remove();
+            // }
+            $excludeSelectors = [
+                'header', 'footer', 'aside', 'nav', 'script',
+                'form', 'button', 'input', 'select', 'textarea', 'style'
+            ];
+            foreach ($excludeSelectors as $selector) {
+                foreach ($xpath->query("//body/{$selector}") as $exclude) {
+                    $exclude->parentNode->removeChild($exclude);
+                }
             }
     
-            $excludes = $main->querySelectorAll('body>header, footer, aside, nav, script, form, button, input, select, textarea, style');
-            foreach ($excludes as $exclude) {
-                $exclude->remove();
-            }
-    
-            $content = $main->textContent;
+            $content = $main ? $main->textContent : '';
             $content = preg_replace('/\s+/', ' ', $content);
             $content = mb_convert_encoding($content, 'UTF-8', 'auto');
 
