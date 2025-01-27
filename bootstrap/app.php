@@ -16,7 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
         ]);
 
-        $middleware->trustProxies(at: '*'); 
+        $middleware->trustProxies(at: '162.55.216.167'); 
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
