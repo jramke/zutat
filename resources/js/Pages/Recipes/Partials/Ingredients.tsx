@@ -198,6 +198,7 @@ export default function Ingredients({ ingredients, form }: { ingredients: Ingred
                                 className="rounded-none border-transparent outline-none heading w-full"
                                 value={group.name || "Infredients"}
                                 onChange={(e) => handleGroupNameChange(e, groupIndex)}
+                                readOnly={data.is_locked}
                             />
                         </div>
                         <ul className="space-y-3">
