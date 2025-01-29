@@ -14,6 +14,7 @@
         "laravel/tinker": "^2.9",
         "openai-php/laravel": "^0.10.2",
         "resend/resend-php": "^0.15.1",
+        "spatie/crawler": "^8.4",
         "stevebauman/purify": "^6.2",
         "tightenco/ziggy": "^2.0"
     },

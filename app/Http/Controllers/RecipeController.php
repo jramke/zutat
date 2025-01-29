@@ -18,13 +18,14 @@ use Stevebauman\Purify\Facades\Purify;
 use Illuminate\Validation\Rule;
 use App\Enums\RecipeDifficulty;
 
+
 class RecipeController extends Controller
 {
-    private $extractor;
+    private $recipeExtractor;
 
-    public function __construct(RecipeExtractionService $extractor)
+    public function __construct(RecipeExtractionService $recipeExtractor)
     {
-        $this->extractor = $extractor;
+        $this->recipeExtractor = $recipeExtractor;
     }
 
     private function validationRules(): array
@@ -116,69 +117,33 @@ class RecipeController extends Controller
             $data = $request->validate([
                 'url' => 'required|url',
             ]);
+
+            $this->recipeExtractor->startCrawlingUrl($data['url']);
+
+            // TODO: get content from the recipeExtractor via event or so
     
-            $response = Http::get($data['url']);
-            if ($response->failed()) {
-                return back()->withErrors(['url' => 'Failed to fetch URL']);
-            }
-
-            $html = $response->getBody();
-            // /** @disregard */
-            // $dom = \Dom\HTMLDocument::createFromString($html, LIBXML_NOERROR);
-            $dom = new \DOMDocument();
-            $dom->loadHTML($html, LIBXML_NOERROR);
-            $xpath = new \DOMXPath($dom);
-
-            // $main = $dom->querySelector('main');
-            // if (!$main) {
-            //     $main = $dom->body;
-            // }
-            $main = $xpath->query('//main')->item(0);
-            if (!$main) {
-                $main = $dom->getElementsByTagName('body')->item(0);
-            }
-
-            // $excludes = $main->querySelectorAll('body>header, footer, aside, nav, script, form, button, input, select, textarea, style');
-            // foreach ($excludes as $exclude) {
-            //     $exclude->remove();
-            // }
-            $excludeSelectors = [
-                'header', 'footer', 'aside', 'nav', 'script',
-                'form', 'button', 'input', 'select', 'textarea', 'style'
-            ];
-            foreach ($excludeSelectors as $selector) {
-                foreach ($xpath->query("//body/{$selector}") as $exclude) {
-                    $exclude->parentNode->removeChild($exclude);
-                }
-            }
-    
-            $content = $main ? $main->textContent : '';
-            $content = preg_replace('/\s+/', ' ', $content);
-            $content = mb_convert_encoding($content, 'UTF-8', 'auto');
-
-            if (empty($content)) {
-                return back()->withErrors(['url' => 'No content could be extracted from URL']);
-            }
-    
-            $recipeData = $this->extractor->extractRecipeData($content);
+            // $recipeData = $this->recipeExtractor->extractRecipeData($content);
             
-            $recipeValidator = Validator::make($recipeData, $this->validationRules());
+            // $recipeValidator = Validator::make($recipeData, $this->validationRules());
 
-            $validRecipeData = collect($recipeData)
-                ->except(array_keys($recipeValidator->errors()->toArray()))
-                ->toArray();
+            // $validRecipeData = collect($recipeData)
+            //     ->except(array_keys($recipeValidator->errors()->toArray()))
+            //     ->toArray();
 
-            $sanitizedRecipeData = $this->sanitizeRecipeData($validRecipeData);
+            // $sanitizedRecipeData = $this->sanitizeRecipeData($validRecipeData);
 
-            $recipe = $cookbook->recipes()->create([
-                'user_id' => $request->user()->id,
-                ...$sanitizedRecipeData,
-            ]);
+            // $recipe = $cookbook->recipes()->create([
+            //     'user_id' => $request->user()->id,
+            //     ...$sanitizedRecipeData,
+            // ]);
 
             return redirect()
-                ->route('recipes.form', ['cookbook' => $cookbook, 'recipe' => $recipe])
-                ->with('success', 'Recipe created successfully.')
-                ->withErrors($recipeValidator->errors());
+                ->route('recipes.form', [
+                    'cookbook' => $cookbook, 
+                    // 'recipe' => $recipe
+                ])
+                ->with('success', 'Recipe created successfully.');
+                // ->withErrors($recipeValidator->errors());
             
         } catch (\Exception $e) {
             Log::error('Recipe extraction failed', [
