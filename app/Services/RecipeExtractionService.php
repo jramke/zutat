@@ -5,6 +5,10 @@ namespace App\Services;
 use App\Enums\RecipeDifficulty;
 use OpenAI\Laravel\Facades\OpenAI;
 use Illuminate\Support\Facades\Cache;
+use Psr\Http\Message\ResponseInterface;
+use App\Observers\Recipe\RecipeScraperObserver;
+use Spatie\Crawler\Crawler;
+use Spatie\Browsershot\Browsershot;
 
 class RecipeExtractionService
 {
@@ -21,6 +25,82 @@ class RecipeExtractionService
             'role' => 'system',
             'content' => "You are a helpful recipe extraction assistant. You will receive recipe content from websites and answer specific questions about the recipe. Always provide concise, structured responses focused only on the asked information. Always respond in the SAME language as the recipe, also for estimated values. You will respond in JSON Format. If certain information is not available, respond with the value null not the string 'null'. If the content does not include a recipe respond with null."
         ];
+    }
+
+    public function startCrawlingUrl(string $url): void
+    {
+        Crawler::create()
+            ->setCrawlObserver(new RecipeScraperObserver())
+            ->setBrowsershot(
+                (new Browsershot())
+                    ->addChromiumArguments(
+                        [
+                            'no-sandbox', 
+                            'disable-setuid-sandbox', 
+                            // 'lang' => 'en-US',
+                            // 'headless', 
+                            // 'disable-gpu'
+                        ]
+                    )
+                    ->userAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
+                    // ->setExtraHttpHeaders(['Accept-Language' => 'en-US,en;q=0.9'])
+                    ->setEnvironmentOptions([
+                        'LANG' => 'en-US',
+                    ])
+                    ->waitUntilNetworkIdle()
+            )
+            ->executeJavaScript()
+            ->setMaximumDepth(0)
+            ->setTotalCrawlLimit(1)
+            ->startCrawling($url);
+    }
+
+    // TODO: use dom api (uncommented) if nixpacks supports php 8.4
+    public function getContentFromResponse(ResponseInterface $response): string
+    {
+        $html = $response->getBody();
+
+        // /** @disregard */
+        // $dom = \Dom\HTMLDocument::createFromString($html, LIBXML_NOERROR);
+        $dom = new \DOMDocument();
+        $dom->loadHTML($html, LIBXML_NOERROR);
+
+        $xpath = new \DOMXPath($dom);
+
+        // TODO: first search for srcipt tag with schema.org/Recipe
+
+        // $main = $dom->querySelector('main');
+        // if (!$main) {
+        //     $main = $dom->body;
+        // }
+        $main = $xpath->query('//main')->item(0);
+        if (!$main) {
+            $main = $dom->getElementsByTagName('body')->item(0);
+        }
+
+        // $excludes = $main->querySelectorAll('body>header, footer, aside, nav, script, form, button, input, select, textarea, style');
+        // foreach ($excludes as $exclude) {
+        //     $exclude->remove();
+        // }
+        $excludeSelectors = [
+            'header', 'footer', 'aside', 'nav', 'script',
+            'form', 'button', 'input', 'select', 'textarea', 'style'
+        ];
+        foreach ($excludeSelectors as $selector) {
+            foreach ($xpath->query("//body/{$selector}") as $exclude) {
+                $exclude->parentNode->removeChild($exclude);
+            }
+        }
+
+        $content = $main ? $main->textContent : '';
+        $content = preg_replace('/\s+/', ' ', $content);
+        $content = mb_convert_encoding($content, 'UTF-8', 'auto');
+
+        if (empty($content)) {
+            throw new \Exception('No content could be extracted from URL');
+        }
+        
+        return $content;
     }
 
     public function extractRecipeData(string $content): array
