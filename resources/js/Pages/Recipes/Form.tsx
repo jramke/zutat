@@ -5,7 +5,7 @@ import {
     FormFieldLabel,
 } from "@/Components/ui/form-field";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Cookbook, PageProps, Recipe } from "@/types";
+import { Cookbook, IngredientGroup, PageProps, Recipe } from "@/types";
 import { Head, useForm } from "@inertiajs/react";
 import { FormEventHandler, useEffect, useRef } from "react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/Components/ui/tooltip";
@@ -42,8 +42,8 @@ export default function Create({
         title: recipe?.title ?? "",
         description: recipe?.description ?? "",
         instructions: recipe?.instructions ?? null,
-        ingredients: initialIngredients,
-        nutrition_per_serving: recipe?.nutrition_per_serving ?? null,
+        ingredients: JSON.stringify(initialIngredients ?? []),
+        nutrition_per_serving: JSON.stringify(recipe?.nutrition_per_serving ?? null),
         difficulty: recipe?.difficulty ?? null,
         prep_time: recipe?.prep_time ?? "",
         cook_time: recipe?.cook_time ?? "",
@@ -191,7 +191,7 @@ export default function Create({
                 <Separator className="my-6" />
                 {/* <p className="heading mt-6">Ingredients</p> */}
                 <div className="space-y-6 text-prose-body">
-                    <Ingredients ingredients={data.ingredients} form={form} />
+                    <Ingredients ingredients={JSON.parse(data.ingredients)} form={form} />
                 </div>
                 
                 <Separator className="my-6" />

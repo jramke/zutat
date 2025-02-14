@@ -7,7 +7,7 @@ import { TODO } from "@/types";
 import { NumberField } from "@base-ui-components/react/number-field";
 import { usePage } from "@inertiajs/react";
 import { ArrowLeftRight, CircleDashed, Minus, Pentagon, Plus, Square, Triangle } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, JSX } from "react";
 
 export default function Metadata({ form }: { form: TODO }) {
 
