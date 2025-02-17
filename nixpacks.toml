@@ -1,8 +1,5 @@
 [phases.setup]
-nixPkgs = [
-    "python311Packages.supervisor",
-    "chromium"
-]
+nixPkgs = ["...", "python311Packages.supervisor", "chromium"]
 
 [phases.build]
 cmds = [
