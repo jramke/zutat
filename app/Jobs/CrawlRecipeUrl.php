@@ -20,6 +20,13 @@ class CrawlRecipeUrl implements ShouldQueue
     private $recipeExtractor;
 
     /**
+     * The number of times the job may be attempted.
+     *
+     * @var int
+     */
+    public $tries = 1;
+
+    /**
      * Create a new job instance.
      */
     public function __construct(string|UriInterface $url, Recipe $recipe)
