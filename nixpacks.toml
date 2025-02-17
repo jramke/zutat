@@ -1,8 +1,6 @@
 [phases.setup]
 nixPkgs = [
-    "...", 
     "python311Packages.supervisor",
-    
     "chromium",
     "libx11-xcb",            
     "libxcomposite",
