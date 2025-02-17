@@ -3,10 +3,12 @@
 namespace App\Services;
 
 use App\Enums\RecipeDifficulty;
+use App\Models\Recipe;
 use OpenAI\Laravel\Facades\OpenAI;
 use Illuminate\Support\Facades\Cache;
 use Psr\Http\Message\ResponseInterface;
 use App\Observers\Recipe\RecipeScraperObserver;
+use Psr\Http\Message\UriInterface;
 use Spatie\Crawler\Crawler;
 use Spatie\Browsershot\Browsershot;
 
@@ -27,23 +29,18 @@ class RecipeExtractionService
         ];
     }
 
-    public function startCrawlingUrl(string $url): void
+    public function startCrawlingUrl(string|UriInterface $url, Recipe $recipe): void
     {
         Crawler::create()
-            ->setCrawlObserver(new RecipeScraperObserver())
+            ->setCrawlObserver(new RecipeScraperObserver($url, $recipe))
             ->setBrowsershot(
                 (new Browsershot())
-                    ->addChromiumArguments(
-                        [
-                            'no-sandbox', 
-                            'disable-setuid-sandbox', 
-                            // 'lang' => 'en-US',
-                            // 'headless', 
-                            // 'disable-gpu'
-                        ]
-                    )
+                    ->setChromePath('/usr/bin/chromium')
+                    ->addChromiumArguments([
+                        'no-sandbox', 
+                        'disable-setuid-sandbox', 
+                    ])
                     ->userAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
-                    // ->setExtraHttpHeaders(['Accept-Language' => 'en-US,en;q=0.9'])
                     ->setEnvironmentOptions([
                         'LANG' => 'en-US',
                     ])

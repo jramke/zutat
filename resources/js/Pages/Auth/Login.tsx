@@ -70,9 +70,9 @@ export default function Login({
                     <Checkbox 
                         name="remember"
                         checked={data.remember}
-                        onCheckedChange={(checked) =>
-                            setData('remember', checked)
-                        }
+                        // onCheckedChange={(checked) =>
+                        //     setData('remember', checked)
+                        // }
                     >
                         Remember me
                     </Checkbox>

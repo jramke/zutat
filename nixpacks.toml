@@ -1,9 +1,9 @@
 [phases.setup]
-# TODO: install same packages as in ddev config and also run npx install chrome
 nixPkgs = [
     "...", 
     "python311Packages.supervisor",
     
+    "chromium",
     "libx11-xcb",            
     "libxcomposite",
     "libasound2",
@@ -31,7 +31,8 @@ nixPkgs = [
     "libxrandr",
     "libxrender",
     "libxss",
-    "libxtst"
+    "libxtst",
+    "libnss"
 ]
 
 [phases.build]

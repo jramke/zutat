@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Validator;
 use Stevebauman\Purify\Facades\Purify;
 use Illuminate\Validation\Rule;
 use App\Enums\RecipeDifficulty;
-
+use App\Jobs\CrawlRecipeUrl;
 
 class RecipeController extends Controller
 {
@@ -28,41 +28,16 @@ class RecipeController extends Controller
         $this->recipeExtractor = $recipeExtractor;
     }
 
-    private function validationRules(): array
-    {
-        return [
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'instructions' => 'nullable|string',
-            'ingredients' => ['nullable', 'array', new ValidIngredientStructure],
-            'nutrition_per_serving' => ['nullable', 'array', new ValidNutritionPerServingStructure],
-            'servings' => 'nullable|integer|min:1',
-            'prep_time' => 'nullable|integer',
-            'cook_time' => 'nullable|integer',
-            'difficulty' => ['nullable', Rule::enum(RecipeDifficulty::class)],
-            'is_locked' => 'nullable|boolean',
-        ];
-    }
-
-    private function sanitizeRecipeData(array $data): array
-    {
-        return [
-            'title' => Purify::clean($data['title']),
-            'description' => Purify::clean($data['description'] ?? null),
-            'instructions' => Purify::clean($data['instructions'] ?? null),
-            // 'instructions' => array_map(fn($instruction) => Purify::clean($instruction), $data['instructions'] ?? []),
-            'ingredients' => array_map(fn($ingredient) => Purify::clean($ingredient), $data['ingredients'] ?? []),
-            'nutrition_per_serving' => $data['nutrition_per_serving'] ?? null,
-            'servings' => $data['servings'] ?? 1,
-            'prep_time' => $data['prep_time'] ?? null,
-            'cook_time' => $data['cook_time'] ?? null,
-            'difficulty' => $data['difficulty'] ?? null,
-            'is_locked' => $data['is_locked'] ?? false,
-        ];
-    }
-
     public function form(Cookbook $cookbook, Recipe $recipe = null)
     {
+        if ($recipe->is_extracting ?? false) {
+            return redirect()
+                ->route('cookbooks.index', [
+                    'cookbook' => $cookbook, 
+                ])
+                ->withErrors('recipe', 'Recipe is extracting, please wait.');
+        }
+
         Breadcrumbs::generate('recipes.form', $cookbook, $recipe);
 
         return Inertia::render('Recipes/Form', [
@@ -73,8 +48,7 @@ class RecipeController extends Controller
 
     public function store(Request $request, Cookbook $cookbook)
     {
-        $data = $request->validate($this->validationRules());
-        $data = $this->sanitizeRecipeData($data);
+        $data = Recipe::sanitizeRecipeData($request->validate(Recipe::validationRules()));
 
         $recipe = $cookbook->recipes()->create([
             'user_id' => $request->user()->id,
@@ -86,8 +60,7 @@ class RecipeController extends Controller
 
     public function update(Request $request, Cookbook $cookbook, Recipe $recipe)
     {
-        $data = $request->validate($this->validationRules());
-        $data = $this->sanitizeRecipeData($data);
+        $data = Recipe::sanitizeRecipeData($request->validate(Recipe::validationRules()));
 
         $recipe->update($data);
 
@@ -118,9 +91,9 @@ class RecipeController extends Controller
                 'url' => 'required|url',
             ]);
 
-            $this->recipeExtractor->startCrawlingUrl($data['url']);
+            $placeholderRecipe = Recipe::createExtractingPlaceholderRecipe($cookbook);
 
-            // TODO: get content from the recipeExtractor via event or so
+            CrawlRecipeUrl::dispatch($data['url'], $placeholderRecipe);
     
             // $recipeData = $this->recipeExtractor->extractRecipeData($content);
             
@@ -137,13 +110,7 @@ class RecipeController extends Controller
             //     ...$sanitizedRecipeData,
             // ]);
 
-            return redirect()
-                ->route('recipes.form', [
-                    'cookbook' => $cookbook, 
-                    // 'recipe' => $recipe
-                ])
-                ->with('success', 'Recipe created successfully.');
-                // ->withErrors($recipeValidator->errors());
+            return back();
             
         } catch (\Exception $e) {
             Log::error('Recipe extraction failed', [
