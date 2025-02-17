@@ -31,11 +31,13 @@ class RecipeExtractionService
 
     public function startCrawlingUrl(string|UriInterface $url, Recipe $recipe): void
     {
+        $chromePath = env('CHROME_PATH', '/usr/bin/chromium');
+
         Crawler::create()
             ->setCrawlObserver(new RecipeScraperObserver($url, $recipe))
             ->setBrowsershot(
                 (new Browsershot())
-                    ->setChromePath('/usr/bin/chromium')
+                    ->setChromePath($chromePath)
                     ->addChromiumArguments([
                         'no-sandbox', 
                         'disable-setuid-sandbox', 
