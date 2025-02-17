@@ -11,6 +11,8 @@ export default function Edit({ cookbook, recipes, auth }: PageProps<{ cookbook: 
     // TODO: check if there are recipes extracting since maybe 2 minutes then delete them
     const isAnyRecipeExtracting = (recipes.filter((recipe) => recipe.is_extracting).length ?? 0) > 0;
     
+    // TODO: inform user if recipe extraction failed
+
     const { start, stop } = usePoll(1000, { 
         only: ['recipes'],
         onStart() {},
