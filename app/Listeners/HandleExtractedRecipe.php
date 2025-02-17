@@ -25,14 +25,14 @@ class HandleExtractedRecipe
         $recipe = $event->recipe;
 
         if ($event->status !== 'success') {
-            Log::warning("Failed to extract recipe from {$event->url}");
+            Log::error("Failed to extract recipe from {$event->url}");
             $recipe->delete();
             return;
         }
         
         $recipeData = $event->recipeData;
         if (empty($recipeData)) {
-            Log::warning("No recipe data extracted from {$event->url}");
+            Log::error("No recipe data extracted from {$event->url}");
             $recipe->delete();
             return;
         }

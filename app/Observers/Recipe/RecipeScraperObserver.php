@@ -48,7 +48,7 @@ class RecipeScraperObserver extends CrawlObserver
         try {
             $this->content = $this->recipeExtractor->getContentFromResponse($response);
         } catch (\Exception $e) {
-            Log::error("Error extracting content: " . $e->getMessage());
+            Log::error("Error extracting content from url {$url}: " . $e->getMessage());
             $this->content = null;
         }
     }
@@ -62,7 +62,7 @@ class RecipeScraperObserver extends CrawlObserver
         ?UriInterface $foundOnUrl = null,
         ?string $linkText = null,
     ): void {
-        Log::error("Failed: {$url}", ['exception' => $requestException]);
+        Log::error("Failed crawling URL: {$url}", ['exception' => $requestException]);
 
         event(new RecipeExtracted(
             status: 'failed',

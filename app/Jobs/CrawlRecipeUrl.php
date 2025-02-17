@@ -7,6 +7,7 @@ use App\Models\Recipe;
 use App\Services\RecipeExtractionService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Support\Facades\Log;
 use Psr\Http\Message\UriInterface;
 use Throwable;
 
@@ -41,6 +42,7 @@ class CrawlRecipeUrl implements ShouldQueue
      */
     public function failed(?Throwable $exception): void
     {
+        Log::error("CrawlRecipeUrl job failed ", ['exception' => $exception]);
         $this->recipe->delete();
     }
 }
