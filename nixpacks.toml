@@ -1,36 +1,7 @@
 [phases.setup]
 nixPkgs = [
     "python311Packages.supervisor",
-    "chromium",
-    "libx11-xcb",            
-    "libxcomposite",
-    "libasound2",
-    "libatk",
-    "libatk-bridge",
-    "libcairo",
-    "libcups",
-    "libdbus",
-    "libexpat",
-    "libfontconfig",
-    "libgbm",
-    "libglib",
-    "libgtk+3",
-    "libnspr",
-    "libpango",
-    "libpangocairo",
-    "libstdc++",
-    "libx11",
-    "libxcb",
-    "libxcursor",
-    "libxdamage",
-    "libxext",
-    "libxfixes",
-    "libxi",
-    "libxrandr",
-    "libxrender",
-    "libxss",
-    "libxtst",
-    "libnss"
+    "chromium"
 ]
 
 [phases.build]
