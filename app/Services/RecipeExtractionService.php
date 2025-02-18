@@ -8,6 +8,7 @@ use OpenAI\Laravel\Facades\OpenAI;
 use Illuminate\Support\Facades\Cache;
 use Psr\Http\Message\ResponseInterface;
 use App\Observers\Recipe\RecipeScraperObserver;
+use Illuminate\Support\Facades\Log;
 use Psr\Http\Message\UriInterface;
 use Spatie\Crawler\Crawler;
 use Spatie\Browsershot\Browsershot;
@@ -33,29 +34,38 @@ class RecipeExtractionService
     {
         $chromePath = env('CHROME_PATH', '/usr/bin/chromium');
 
-        Crawler::create()
+        Log::info('Start crawling');
+
+        $browsershot = (new Browsershot())
+            ->setChromePath($chromePath)
+            ->addChromiumArguments([
+                'no-sandbox', 
+                'disable-setuid-sandbox', 
+                'disable-dev-shm-usage',
+                'disable-gpu',
+            ])
+            ->newHeadless()
+            ->timeout(300)
+            ->userAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
+            ->setEnvironmentOptions([
+                'LANG' => 'en-US',
+            ])
+            ->waitUntilNetworkIdle();
+        
+        Log::info('Browsershot configured');
+
+        $crawler = Crawler::create()
             ->setCrawlObserver(new RecipeScraperObserver($url, $recipe))
-            ->setBrowsershot(
-                (new Browsershot())
-                    ->setChromePath($chromePath)
-                    ->addChromiumArguments([
-                        'no-sandbox', 
-                        'disable-setuid-sandbox', 
-                        'disable-dev-shm-usage',
-                        'disable-gpu',
-                    ])
-                    ->newHeadless()
-                    ->timeout(300)
-                    ->userAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
-                    ->setEnvironmentOptions([
-                        'LANG' => 'en-US',
-                    ])
-                    ->waitUntilNetworkIdle()
-            )
+            ->setBrowsershot($browsershot)
             ->executeJavaScript()
             ->setMaximumDepth(0)
-            ->setTotalCrawlLimit(1)
-            ->startCrawling($url);
+            ->setTotalCrawlLimit(1);
+        
+        Log::info('Crawler created');
+        
+        $crawler->startCrawling($url);
+
+        Log::info('Crawler started');
     }
 
     // TODO: use dom api (uncommented) if nixpacks supports php 8.4
