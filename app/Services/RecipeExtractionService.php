@@ -56,8 +56,8 @@ class RecipeExtractionService
 
         $crawler = Crawler::create()
             ->setCrawlObserver(new RecipeScraperObserver($url, $recipe))
-            ->setBrowsershot($browsershot)
-            ->executeJavaScript()
+            // ->setBrowsershot($browsershot)
+            // ->executeJavaScript()
             ->setMaximumDepth(0)
             ->setTotalCrawlLimit(1);
         
