@@ -45,7 +45,7 @@ class RecipeExtractionService
                 'disable-gpu',
             ])
             ->newHeadless()
-            ->timeout(300)
+            // ->timeout(300)
             ->userAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
             ->setEnvironmentOptions([
                 'LANG' => 'en-US',
@@ -56,8 +56,8 @@ class RecipeExtractionService
 
         $crawler = Crawler::create()
             ->setCrawlObserver(new RecipeScraperObserver($url, $recipe))
-            // ->setBrowsershot($browsershot)
-            // ->executeJavaScript()
+            ->setBrowsershot($browsershot)
+            ->executeJavaScript()
             ->setMaximumDepth(0)
             ->setTotalCrawlLimit(1);
         
