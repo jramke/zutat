@@ -32,12 +32,8 @@ class RecipeExtractionService
 
     public function startCrawlingUrl(string|UriInterface $url, Recipe $recipe): void
     {
-        $chromePath = env('CHROME_PATH', '/usr/bin/chromium');
-
         Log::info('Start crawling');
-
         $browsershot = (new Browsershot())
-            ->setChromePath($chromePath)
             ->addChromiumArguments([
                 'no-sandbox', 
                 'disable-setuid-sandbox', 
@@ -51,6 +47,10 @@ class RecipeExtractionService
                 'LANG' => 'en-US',
             ])
             ->waitUntilNetworkIdle();
+        
+        if (app()->isProduction()) {
+            $browsershot->setIncludePath('$PATH:/root/.nix-profile/bin');
+        }
         
         Log::info('Browsershot configured');
 
