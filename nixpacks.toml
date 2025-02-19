@@ -1,6 +1,6 @@
 [phases.setup]
 nixPkgs = ["...", "python311Packages.supervisor", "chromium"]
-nixLibs = ["nss"]
+nixLibs = ["nss", "libnspr4"]
 
 [phases.build]
 cmds = [
