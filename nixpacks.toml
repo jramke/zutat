@@ -1,6 +1,6 @@
 [phases.setup]
 nixPkgs = ["...", "python311Packages.supervisor", "chromium"]
-aptPkgs = ["libnspr4", "libnss3", "libdbus-1.so.3"]
+aptPkgs = ["libnspr4", "libnss3", "dbus"]
 
 [phases.build]
 cmds = [
